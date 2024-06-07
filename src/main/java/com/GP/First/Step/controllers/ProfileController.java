@@ -44,8 +44,7 @@ public class ProfileController {
             user.setLastName(updatedUser.getLastName());
         if (updatedUser.getUserName() != null)
             user.setUserName(updatedUser.getUserName());
-        if (updatedUser.getEmail() != null)
-            user.setEmail(updatedUser.getEmail());
+
 
         userRepository.save(user);
 

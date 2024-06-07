@@ -69,6 +69,7 @@ public class AuthController {
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.ok("signup successful");
     }
 }
