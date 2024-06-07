@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class FirstStepApplication {
 
-    @GetMapping("/message")
+    @GetMapping("/test")
     public String message() {
         return "OK Finally ?";
     }
