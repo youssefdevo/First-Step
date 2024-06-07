@@ -38,9 +38,15 @@ public class ProfileController {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
 
-        user.setFirstName(updatedUser.getFirstName());
-        user.setLastName(updatedUser.getLastName());
-        user.setUserName(updatedUser.getUserName());
+        if (updatedUser.getFirstName() != null)
+            user.setFirstName(updatedUser.getFirstName());
+        if (updatedUser.getLastName() != null)
+            user.setLastName(updatedUser.getLastName());
+        if (updatedUser.getUserName() != null)
+            user.setUserName(updatedUser.getUserName());
+        if (updatedUser.getEmail() != null)
+            user.setEmail(updatedUser.getEmail());
+
         userRepository.save(user);
 
         return ResponseEntity.ok(user);
