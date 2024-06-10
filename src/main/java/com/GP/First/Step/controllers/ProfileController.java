@@ -3,6 +3,8 @@ package com.GP.First.Step.controllers;
 
 import com.GP.First.Step.DAO.UserRepository;
 import com.GP.First.Step.DTO.request.ResetPasswordReq;
+import com.GP.First.Step.DTO.response.ErrorRes;
+import com.GP.First.Step.DTO.response.SuccessRes;
 import com.GP.First.Step.auth.TokenBlacklist;
 import com.GP.First.Step.entities.User;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,14 +29,15 @@ public class ProfileController {
     }
 
     @GetMapping
-    public ResponseEntity<User> getProfile() {
+    public ResponseEntity<SuccessRes> getProfile() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
-        return ResponseEntity.ok(user);
+        //return ResponseEntity.ok(user);
+        return ResponseEntity.ok().body(new SuccessRes(HttpStatus.OK, "Your profile got successfully", user));
     }
 
     @PutMapping
-    public ResponseEntity<User> updateProfile(@RequestBody User updatedUser) {
+    public ResponseEntity<SuccessRes> updateProfile(@RequestBody User updatedUser) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -48,7 +51,8 @@ public class ProfileController {
 
         userRepository.save(user);
 
-        return ResponseEntity.ok(user);
+        //return ResponseEntity.ok(user);
+        return ResponseEntity.ok().body(new SuccessRes(HttpStatus.OK, "Your profile updated successfully", user));
     }
 
     @PutMapping("/reset-password")
@@ -58,13 +62,14 @@ public class ProfileController {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
 
         if (!passwordEncoder.matches(resetPasswordReq.getCurrentPassword(), user.getPassword())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Current password is incorrect");
+            ErrorRes errorRes = new ErrorRes(HttpStatus.BAD_REQUEST, "Current password is incorrect");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorRes);
         }
 
         user.setPassword(passwordEncoder.encode(resetPasswordReq.getNewPassword()));
         userRepository.save(user);
 
-        return ResponseEntity.ok("Password reset successfully");
+        return ResponseEntity.ok().body(new SuccessRes(HttpStatus.OK, "Password reset successfully", null));
     }
 
     @PostMapping("/signout")
@@ -72,7 +77,7 @@ public class ProfileController {
         String token = request.getHeader("Authorization").substring(7);
         tokenBlacklist.add(token);
         SecurityContextHolder.clearContext();
-        return ResponseEntity.ok("User signed out successfully");
+        return ResponseEntity.ok().body(new SuccessRes(HttpStatus.OK, "User signed out successfully", null));
     }
 
 }

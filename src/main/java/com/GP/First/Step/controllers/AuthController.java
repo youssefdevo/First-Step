@@ -4,6 +4,7 @@ import com.GP.First.Step.DAO.UserRepository;
 import com.GP.First.Step.DTO.request.LoginReq;
 import com.GP.First.Step.DTO.response.ErrorRes;
 import com.GP.First.Step.DTO.response.LoginRes;
+import com.GP.First.Step.DTO.response.SuccessRes;
 import com.GP.First.Step.auth.JwtUtil;
 import com.GP.First.Step.entities.User;
 import org.springframework.http.HttpStatus;
@@ -32,7 +33,6 @@ public class AuthController {
         this.jwtUtil = jwtUtil;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-
     }
 
     @ResponseBody
@@ -40,17 +40,19 @@ public class AuthController {
     public ResponseEntity login(@RequestBody LoginReq loginReq) {
 
         try {
-            Authentication authentication =
-                    authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginReq.getEmail(), loginReq.getPassword()));
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginReq.getEmail(), loginReq.getPassword()));
+
             String email = authentication.getName();
 
-
             User user = userRepository.findByEmail(email).orElseThrow(() -> new BadCredentialsException("Invalid credentials"));
-            System.out.println(user);
+
+            //System.out.println(user);
+
             String token = jwtUtil.createToken(Optional.ofNullable(user));
             LoginRes loginRes = new LoginRes(email, token);
 
-            return ResponseEntity.ok(loginRes);
+            //return ResponseEntity.ok(loginRes);
+            return ResponseEntity.ok().body(new SuccessRes(HttpStatus.OK, "Login successful", loginRes));
 
         } catch (BadCredentialsException e) {
             ErrorRes errorResponse = new ErrorRes(HttpStatus.BAD_REQUEST, "Invalid username or password");
@@ -69,7 +71,10 @@ public class AuthController {
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
+
+        String token = jwtUtil.createToken(Optional.of(user));
+        LoginRes loginRes = new LoginRes(user.getEmail(), token);
         ResponseEntity.status(HttpStatus.CREATED).build();
-        return ResponseEntity.ok("signup successful");
+        return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessRes(HttpStatus.CREATED, "Signup successful", loginRes));
     }
 }
