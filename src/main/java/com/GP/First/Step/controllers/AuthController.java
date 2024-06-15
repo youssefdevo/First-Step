@@ -77,4 +77,5 @@ public class AuthController {
         ResponseEntity.status(HttpStatus.CREATED).build();
         return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessRes(HttpStatus.CREATED, "Signup successful", loginRes));
     }
+
 }
