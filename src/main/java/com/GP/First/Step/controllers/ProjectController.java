@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import com.GP.First.Step.services.CSVUtil;
 
+import java.io.File;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,37 +18,41 @@ import java.util.Optional;
 @RequestMapping("/rest/project")
 public class ProjectController {
     private final String csvFilePath = "C:\\FCAI\\Graduation Project/pitch_decks_dataset.csv"; // Set the path to your CSV file
-
     private final ProjectRepository projectRepository;
 
     public ProjectController(ProjectRepository projectRepository) {
         this.projectRepository = projectRepository;
     }
+
     @GetMapping("/all")
     public ResponseEntity<List<Project>> getAllProjects() {
         List<Project> projects = projectRepository.findAll();
         return ResponseEntity.ok(projects);
     }
+
     @GetMapping("/search/{name}")
     public ResponseEntity<?> getProjectByName(@PathVariable String name) {
         List<Project> projects = projectRepository.findByCompanyName(name);
         return ResponseEntity.ok(projects);
     }
+
     @GetMapping("/searchID/{id}")
     public ResponseEntity<?> getProjectByProjectID(@PathVariable long id) {
         Optional<Project> projects = projectRepository.findByProjectID(id);
         return ResponseEntity.ok(projects);
     }
+
     @ResponseBody
     @PostMapping("/upload")
     public ResponseEntity<SuccessRes> createProject(@RequestBody Project project) {
         Project savedProject = projectRepository.save(project);
         return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessRes(HttpStatus.CREATED, "Project created successfully", savedProject));
     }
+
     @ResponseBody
     @PutMapping("/update/{id}")
-    public ResponseEntity<SuccessRes> updateProject(@PathVariable long id,@RequestBody Project updatedProject) {
-        Project project=projectRepository.findByProjectID(id).orElseThrow(() -> new RuntimeException("Project not found"));
+    public ResponseEntity<SuccessRes> updateProject(@PathVariable long id, @RequestBody Project updatedProject) {
+        Project project = projectRepository.findByProjectID(id).orElseThrow(() -> new RuntimeException("Project not found"));
 
         if (updatedProject.getCompanyName() != null)
             project.setCompanyName(updatedProject.getCompanyName());
@@ -84,21 +89,24 @@ public class ProjectController {
 
         projectRepository.save(project);
         return ResponseEntity.ok().body(new SuccessRes(HttpStatus.OK, "Your project updated successfully", project));
-
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<SuccessRes> deleteProject(@PathVariable Long id) {
-        Project project=projectRepository.findByProjectID(id).orElseThrow(() -> new RuntimeException("Project not found"));
+        Project project = projectRepository.findByProjectID(id).orElseThrow(() -> new RuntimeException("Project not found"));
         projectRepository.delete(project);
         return ResponseEntity.ok(new SuccessRes(HttpStatus.OK, "Project deleted successfully", null));
     }
+
     @GetMapping("/transfer")
-    public ResponseEntity<List<Project>> transform()
-    {
+    public ResponseEntity<?> transfer() {
+        File file = new File(csvFilePath);
+        if (!file.exists() || !file.canRead()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorRes(HttpStatus.FORBIDDEN, "File not found or not readable"));
+        }
+
         List<Project> projects = CSVUtil.readProjectsFromCSV(csvFilePath);
         projectRepository.saveAll(projects);
         return ResponseEntity.ok(projects);
     }
-
 }
