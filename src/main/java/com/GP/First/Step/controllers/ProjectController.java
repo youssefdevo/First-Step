@@ -97,7 +97,7 @@ public class ProjectController {
         projectRepository.delete(project);
         return ResponseEntity.ok(new SuccessRes(HttpStatus.OK, "Project deleted successfully", null));
     }
-
+    //to transform data from exel to DB
     @GetMapping("/transfer")
     public ResponseEntity<?> transfer() {
         File file = new File(csvFilePath);
