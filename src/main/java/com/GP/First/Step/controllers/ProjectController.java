@@ -1,54 +1,53 @@
 package com.GP.First.Step.controllers;
 
+import com.GP.First.Step.DAO.ProjectRepository;
+import com.GP.First.Step.DTO.response.ErrorRes;
 import com.GP.First.Step.DTO.response.SuccessRes;
 import com.GP.First.Step.entities.Project;
-import com.GP.First.Step.services.CSVUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import com.GP.First.Step.services.CSVUtil;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/rest/project")
 public class ProjectController {
-
     private final String csvFilePath = "C:\\FCAI\\Graduation Project/pitch_decks_dataset.csv"; // Set the path to your CSV file
 
+    private final ProjectRepository projectRepository;
+
+    public ProjectController(ProjectRepository projectRepository) {
+        this.projectRepository = projectRepository;
+    }
     @GetMapping("/all")
     public ResponseEntity<List<Project>> getAllProjects() {
-        List<Project> projects = CSVUtil.readProjectsFromCSV(csvFilePath);
+        List<Project> projects = projectRepository.findAll();
         return ResponseEntity.ok(projects);
     }
-
     @GetMapping("/search/{name}")
     public ResponseEntity<?> getProjectByName(@PathVariable String name) {
-        List<Project> projects = CSVUtil.readProjectsFromCSV(csvFilePath);
-        List<Project> matchedProjects = projects.stream()
-                .filter(project -> project.getCompanyName().equalsIgnoreCase(name))
-                .toList();
-        return ResponseEntity.ok(matchedProjects);
+        List<Project> projects = projectRepository.findByCompanyName(name);
+        return ResponseEntity.ok(projects);
     }
-
+    @GetMapping("/searchID/{id}")
+    public ResponseEntity<?> getProjectByProjectID(@PathVariable long id) {
+        Optional<Project> projects = projectRepository.findByProjectID(id);
+        return ResponseEntity.ok(projects);
+    }
     @ResponseBody
     @PostMapping("/upload")
     public ResponseEntity<SuccessRes> createProject(@RequestBody Project project) {
-        List<Project> projects = CSVUtil.readProjectsFromCSV(csvFilePath);
-        project.setProjectID(projects.size() + 1); // Set ID for the new project
-        projects.add(project);
-        CSVUtil.writeProjectsToCSV(csvFilePath, projects);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessRes(HttpStatus.CREATED, "Project created successfully", project));
+        Project savedProject = projectRepository.save(project);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessRes(HttpStatus.CREATED, "Project created successfully", savedProject));
     }
-
     @ResponseBody
     @PutMapping("/update/{id}")
-    public ResponseEntity<SuccessRes> updateProject(@PathVariable long id, @RequestBody Project updatedProject) {
-        List<Project> projects = CSVUtil.readProjectsFromCSV(csvFilePath);
-        Project project = projects.stream()
-                .filter(p -> p.getProjectID() == id)
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Project not found"));
+    public ResponseEntity<SuccessRes> updateProject(@PathVariable long id,@RequestBody Project updatedProject) {
+        Project project=projectRepository.findByProjectID(id).orElseThrow(() -> new RuntimeException("Project not found"));
 
         if (updatedProject.getCompanyName() != null)
             project.setCompanyName(updatedProject.getCompanyName());
@@ -83,20 +82,23 @@ public class ProjectController {
         if (updatedProject.getType() != null)
             project.setType(updatedProject.getType());
 
-        CSVUtil.writeProjectsToCSV(csvFilePath, projects);
+        projectRepository.save(project);
         return ResponseEntity.ok().body(new SuccessRes(HttpStatus.OK, "Your project updated successfully", project));
+
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<SuccessRes> deleteProject(@PathVariable Long id) {
-        List<Project> projects = CSVUtil.readProjectsFromCSV(csvFilePath);
-        Project project = projects.stream()
-                .filter(p -> p.getProjectID() == id)
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Project not found"));
-
-        projects.remove(project);
-        CSVUtil.writeProjectsToCSV(csvFilePath, projects);
+        Project project=projectRepository.findByProjectID(id).orElseThrow(() -> new RuntimeException("Project not found"));
+        projectRepository.delete(project);
         return ResponseEntity.ok(new SuccessRes(HttpStatus.OK, "Project deleted successfully", null));
     }
+    @GetMapping("/transfer")
+    public ResponseEntity<List<Project>> transform()
+    {
+        List<Project> projects = CSVUtil.readProjectsFromCSV(csvFilePath);
+        projectRepository.saveAll(projects);
+        return ResponseEntity.ok(projects);
+    }
+
 }

@@ -12,16 +12,16 @@ public class Project {
     @Column(name = "id", updatable = false, nullable = false)
     private long projectID;
 
-//    @CsvBindByName(column = "User ID")
-//    @Column(name = "user_id")
-//    private long user_id;
+    @CsvBindByName(column = "User ID")
+    @Column(name = "user_id")
+    private long user_id;
 
     @CsvBindByName(column = "Company Name")
-    @Column(name = "company_name")
+    @Column(name = "companyName")
     private String companyName;
 
     @CsvBindByName(column = "Slogan")
-    @Column(name = "slogan")
+    @Column(name = "slogan",length = 65535)
     private String slogan;
 
     @CsvBindByName(column = "Amount Raised")
@@ -37,7 +37,7 @@ public class Project {
     private String businessModel;
 
     @CsvBindByName(column = "Full Description")
-    @Column(name = "full_description")
+    @Column(name = "full_description",length = 65535)
     private String fullDescription;
 
     @CsvBindByName(column = "Image URL")
@@ -49,11 +49,11 @@ public class Project {
     private String pdf_URL;
 
     @CsvBindByName(column = "Investors")
-    @Column(name = "investors")
+    @Column(name = "investors",length = 65535)
     private String investors;
 
     @CsvBindByName(column = "About")
-    @Column(name = "about")
+    @Column(name = "about",length = 65535)
     private String about;
 
     @CsvBindByName(column = "Industry")
@@ -85,9 +85,9 @@ public class Project {
         this.projectID = projectID;
     }
 
-//    public void setUser_id(long user_id) {
-//        this.user_id = user_id;
-//    }
+    public void setUser_id(long user_id) {
+        this.user_id = user_id;
+    }
 
     public void setCompanyName(String companyName) {
         this.companyName = companyName;
@@ -157,9 +157,9 @@ public class Project {
         return projectID;
     }
 
-//    public long getUser_id() {
-//        return user_id;
-//    }
+    public long getUser_id() {
+        return user_id;
+    }
 
     public String getCompanyName() {
         return companyName;
@@ -229,7 +229,7 @@ public class Project {
     public String toString() {
         return "Project{" +
                 "projectID=" + projectID +
-//                ", user_id=" + user_id +
+                ", user_id=" + user_id +
                 ", companyName='" + companyName + '\'' +
                 ", slogan='" + slogan + '\'' +
                 ", amountRaised='" + amountRaised + '\'' +
