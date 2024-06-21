@@ -1,193 +1,251 @@
 package com.GP.First.Step.entities;
 
+import com.opencsv.bean.CsvBindByName;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "project_table")
 public class Project {
+    @CsvBindByName(column = "ProjectID")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "id", updatable = false, nullable = false)
     private long projectID;
 
-    @Column(name = "user_id")
-    private long user_id;
+//    @CsvBindByName(column = "User ID")
+//    @Column(name = "user_id")
+//    private long user_id;
 
-    @Column(name = "name")
-    private String name;
+    @CsvBindByName(column = "Company Name")
+    @Column(name = "company_name")
+    private String companyName;
 
-    @Column(name = "description")
-    private String description;
-
-    @Column(name = "about")
-    private String about;
+    @CsvBindByName(column = "Slogan")
     @Column(name = "slogan")
     private String slogan;
 
+    @CsvBindByName(column = "Amount Raised")
+    @Column(name = "amount_raised")
+    private String amountRaised;
+
+    @CsvBindByName(column = "Year")
+    @Column(name = "year")
+    private String year;
+
+    @CsvBindByName(column = "Business Model")
+    @Column(name = "business_model")
+    private String businessModel;
+
+    @CsvBindByName(column = "Full Description")
+    @Column(name = "full_description")
+    private String fullDescription;
+
+    @CsvBindByName(column = "Image URL")
+    @Column(name = "image_url")
+    private String imageURL;
+
+    @CsvBindByName(column = "PDF URL")
+    @Column(name = "pdf_url")
+    private String pdf_URL;
+
+    @CsvBindByName(column = "Investors")
+    @Column(name = "investors")
+    private String investors;
+
+    @CsvBindByName(column = "About")
+    @Column(name = "about")
+    private String about;
+
+    @CsvBindByName(column = "Industry")
     @Column(name = "industry")
     private String industry;
 
-    @Column(name = "business_model")
-    private String business_model;
+    @CsvBindByName(column = "Tags")
+    @Column(name = "tags")
+    private String tags;
 
+    @CsvBindByName(column = "Customer Model")
     @Column(name = "customer_model")
-    private String customer_model;
-    @Column(name = "type")
-    private String type;
+    private String customerModel;
 
+    @CsvBindByName(column = "Website")
     @Column(name = "website")
     private String website;
 
+    @CsvBindByName(column = "Legal Name")
     @Column(name = "legal_name")
-    private String legal_name;
+    private String legalName;
 
-    @Column(name = "raised_funds")
-    private String raised_funds;
+    @CsvBindByName(column = "Type")
+    @Column(name = "type")
+    private String type;
 
-    @Column(name = "founding_year")
-    private String founding_year;
-
-    @Column(name = "stage")
-    private String stage;
-
+    // Getters and Setters
     public void setProjectID(long projectID) {
         this.projectID = projectID;
     }
 
-    public void setUser_id(long user_id) {
-        this.user_id = user_id;
-    }
+//    public void setUser_id(long user_id) {
+//        this.user_id = user_id;
+//    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setAbout(String about) {
-        this.about = about;
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
     }
 
     public void setSlogan(String slogan) {
         this.slogan = slogan;
     }
 
+    public void setAmountRaised(String amountRaised) {
+        this.amountRaised = amountRaised;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
+    }
+
+    public void setBusinessModel(String businessModel) {
+        this.businessModel = businessModel;
+    }
+
+    public void setFullDescription(String fullDescription) {
+        this.fullDescription = fullDescription;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
+    }
+
+    public void setPDF_URL(String pdf_URL) {
+        this.pdf_URL = pdf_URL;
+    }
+
+    public void setInvestors(String investors) {
+        this.investors = investors;
+    }
+
+    public void setAbout(String about) {
+        this.about = about;
+    }
+
     public void setIndustry(String industry) {
         this.industry = industry;
     }
 
-    public void setBusiness_model(String business_model) {
-        this.business_model = business_model;
+    public void setTags(String tags) {
+        this.tags = tags;
     }
 
-    public void setCustomer_model(String customer_model) {
-        this.customer_model = customer_model;
-    }
-
-    public void setType(String type) {
-        this.type = type;
+    public void setCustomerModel(String customerModel) {
+        this.customerModel = customerModel;
     }
 
     public void setWebsite(String website) {
         this.website = website;
     }
 
-    public void setLegal_name(String legal_name) {
-        this.legal_name = legal_name;
+    public void setLegalName(String legalName) {
+        this.legalName = legalName;
     }
 
-    public void setRaised_funds(String raised_funds) {
-        this.raised_funds = raised_funds;
-    }
-
-    public void setFounding_year(String founding_year) {
-        this.founding_year = founding_year;
-    }
-
-    public void setStage(String stage) {
-        this.stage = stage;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public long getProjectID() {
         return projectID;
     }
 
-    public long getUser_id() {
-        return user_id;
-    }
+//    public long getUser_id() {
+//        return user_id;
+//    }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getAbout() {
-        return about;
+    public String getCompanyName() {
+        return companyName;
     }
 
     public String getSlogan() {
         return slogan;
     }
 
+    public String getAmountRaised() {
+        return amountRaised;
+    }
+
+    public String getYear() {
+        return year;
+    }
+
+    public String getBusinessModel() {
+        return businessModel;
+    }
+
+    public String getFullDescription() {
+        return fullDescription;
+    }
+
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public String getPDF_URL() {
+        return pdf_URL;
+    }
+
+    public String getInvestors() {
+        return investors;
+    }
+
+    public String getAbout() {
+        return about;
+    }
+
     public String getIndustry() {
         return industry;
     }
 
-    public String getBusiness_model() {
-        return business_model;
+    public String getTags() {
+        return tags;
     }
 
-    public String getCustomer_model() {
-        return customer_model;
-    }
-
-    public String getType() {
-        return type;
+    public String getCustomerModel() {
+        return customerModel;
     }
 
     public String getWebsite() {
         return website;
     }
 
-    public String getLegal_name() {
-        return legal_name;
+    public String getLegalName() {
+        return legalName;
     }
 
-    public String getRaised_funds() {
-        return raised_funds;
-    }
-
-    public String getFounding_year() {
-        return founding_year;
-    }
-
-    public String getStage() {
-        return stage;
+    public String getType() {
+        return type;
     }
 
     @Override
     public String toString() {
         return "Project{" +
                 "projectID=" + projectID +
-                ", user_id=" + user_id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", about='" + about + '\'' +
+//                ", user_id=" + user_id +
+                ", companyName='" + companyName + '\'' +
                 ", slogan='" + slogan + '\'' +
+                ", amountRaised='" + amountRaised + '\'' +
+                ", year='" + year + '\'' +
+                ", businessModel='" + businessModel + '\'' +
+                ", fullDescription='" + fullDescription + '\'' +
+                ", imageURL='" + imageURL + '\'' +
+                ", PDF_URL='" + pdf_URL + '\'' +
+                ", investors='" + investors + '\'' +
+                ", about='" + about + '\'' +
                 ", industry='" + industry + '\'' +
-                ", business_model='" + business_model + '\'' +
-                ", customer_model='" + customer_model + '\'' +
-                ", type='" + type + '\'' +
+                ", tags='" + tags + '\'' +
+                ", customerModel='" + customerModel + '\'' +
                 ", website='" + website + '\'' +
-                ", legal_name='" + legal_name + '\'' +
-                ", raised_funds='" + raised_funds + '\'' +
-                ", founding_year='" + founding_year + '\'' +
-                ", stage='" + stage + '\'' +
+                ", legalName='" + legalName + '\'' +
+                ", type='" + type + '\'' +
                 '}';
     }
 }
