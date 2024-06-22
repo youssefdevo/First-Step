@@ -1,11 +1,14 @@
 package com.GP.First.Step.controllers;
 
 import com.GP.First.Step.DAO.ProjectRepository;
+import com.GP.First.Step.DAO.UserRepository;
 import com.GP.First.Step.DTO.response.ErrorRes;
 import com.GP.First.Step.DTO.response.SuccessRes;
 import com.GP.First.Step.entities.Project;
+import com.GP.First.Step.entities.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import com.GP.First.Step.services.CSVUtil;
@@ -19,9 +22,11 @@ import java.util.Optional;
 public class ProjectController {
     private final String csvFilePath = "C:\\FCAI\\Graduation Project/pitch_decks_dataset.csv"; // Set the path to your CSV file
     private final ProjectRepository projectRepository;
+    UserRepository userRepository;
 
-    public ProjectController(ProjectRepository projectRepository) {
+    public ProjectController(ProjectRepository projectRepository,UserRepository userRepository) {
         this.projectRepository = projectRepository;
+        this.userRepository = userRepository;
     }
 
     @GetMapping("/all")
@@ -42,9 +47,23 @@ public class ProjectController {
         return ResponseEntity.ok(projects);
     }
 
+    // get user projects by his ID.
+    @GetMapping("/userID/{id}")
+    public ResponseEntity<?> getProjectByUserID(@PathVariable long id) {
+        List<Project> projects = projectRepository.findByUserId(id);
+        return ResponseEntity.ok(projects);
+    }
+
     @ResponseBody
     @PostMapping("/upload")
     public ResponseEntity<SuccessRes> createProject(@RequestBody Project project) {
+
+        // get current user
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        // save user id in his project.
+        project.setUserId(user.getId());
+
         Project savedProject = projectRepository.save(project);
         return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessRes(HttpStatus.CREATED, "Project created successfully", savedProject));
     }
@@ -68,8 +87,8 @@ public class ProjectController {
             project.setFullDescription(updatedProject.getFullDescription());
         if (updatedProject.getImageURL() != null)
             project.setImageURL(updatedProject.getImageURL());
-        if (updatedProject.getPDF_URL() != null)
-            project.setPDF_URL(updatedProject.getPDF_URL());
+        if (updatedProject.getPdf_URL() != null)
+            project.setPdf_URL(updatedProject.getPdf_URL());
         if (updatedProject.getInvestors() != null)
             project.setInvestors(updatedProject.getInvestors());
         if (updatedProject.getAbout() != null)
@@ -97,6 +116,9 @@ public class ProjectController {
         projectRepository.delete(project);
         return ResponseEntity.ok(new SuccessRes(HttpStatus.OK, "Project deleted successfully", null));
     }
+
+
+
     //to transform data from exel to DB
     @GetMapping("/transfer")
     public ResponseEntity<?> transfer() {

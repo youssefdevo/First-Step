@@ -14,7 +14,7 @@ public class Project {
 
     @CsvBindByName(column = "User ID")
     @Column(name = "user_id")
-    private long user_id;
+    private long userId;
 
     @CsvBindByName(column = "Company Name")
     @Column(name = "companyName")
@@ -80,156 +80,155 @@ public class Project {
     @Column(name = "type")
     private String type;
 
-    // Getters and Setters
-    public void setProjectID(long projectID) {
-        this.projectID = projectID;
-    }
-
-    public void setUser_id(long user_id) {
-        this.user_id = user_id;
-    }
-
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
-    }
-
-    public void setSlogan(String slogan) {
-        this.slogan = slogan;
-    }
-
-    public void setAmountRaised(String amountRaised) {
-        this.amountRaised = amountRaised;
-    }
-
-    public void setYear(String year) {
-        this.year = year;
-    }
-
-    public void setBusinessModel(String businessModel) {
-        this.businessModel = businessModel;
-    }
-
-    public void setFullDescription(String fullDescription) {
-        this.fullDescription = fullDescription;
-    }
-
-    public void setImageURL(String imageURL) {
-        this.imageURL = imageURL;
-    }
-
-    public void setPDF_URL(String pdf_URL) {
-        this.pdf_URL = pdf_URL;
-    }
-
-    public void setInvestors(String investors) {
-        this.investors = investors;
-    }
-
-    public void setAbout(String about) {
-        this.about = about;
-    }
-
-    public void setIndustry(String industry) {
-        this.industry = industry;
-    }
-
-    public void setTags(String tags) {
-        this.tags = tags;
-    }
-
-    public void setCustomerModel(String customerModel) {
-        this.customerModel = customerModel;
-    }
-
-    public void setWebsite(String website) {
-        this.website = website;
-    }
-
-    public void setLegalName(String legalName) {
-        this.legalName = legalName;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
     public long getProjectID() {
         return projectID;
     }
 
-    public long getUser_id() {
-        return user_id;
+    public void setProjectID(long projectID) {
+        this.projectID = projectID;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 
     public String getCompanyName() {
         return companyName;
     }
 
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
     public String getSlogan() {
         return slogan;
+    }
+
+    public void setSlogan(String slogan) {
+        this.slogan = slogan;
     }
 
     public String getAmountRaised() {
         return amountRaised;
     }
 
+    public void setAmountRaised(String amountRaised) {
+        this.amountRaised = amountRaised;
+    }
+
     public String getYear() {
         return year;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
     }
 
     public String getBusinessModel() {
         return businessModel;
     }
 
+    public void setBusinessModel(String businessModel) {
+        this.businessModel = businessModel;
+    }
+
     public String getFullDescription() {
         return fullDescription;
+    }
+
+    public void setFullDescription(String fullDescription) {
+        this.fullDescription = fullDescription;
     }
 
     public String getImageURL() {
         return imageURL;
     }
 
-    public String getPDF_URL() {
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
+    }
+
+    public String getPdf_URL() {
         return pdf_URL;
+    }
+
+    public void setPdf_URL(String pdf_URL) {
+        this.pdf_URL = pdf_URL;
     }
 
     public String getInvestors() {
         return investors;
     }
 
-    public String getAbout() {
-        return about;
+    public void setInvestors(String investors) {
+        this.investors = investors;
     }
 
     public String getIndustry() {
         return industry;
     }
 
+    public void setIndustry(String industry) {
+        this.industry = industry;
+    }
+
+    public String getAbout() {
+        return about;
+    }
+
+    public void setAbout(String about) {
+        this.about = about;
+    }
+
     public String getTags() {
         return tags;
+    }
+
+    public void setTags(String tags) {
+        this.tags = tags;
     }
 
     public String getCustomerModel() {
         return customerModel;
     }
 
+    public void setCustomerModel(String customerModel) {
+        this.customerModel = customerModel;
+    }
+
     public String getWebsite() {
         return website;
+    }
+
+    public void setWebsite(String website) {
+        this.website = website;
     }
 
     public String getLegalName() {
         return legalName;
     }
 
+    public void setLegalName(String legalName) {
+        this.legalName = legalName;
+    }
+
     public String getType() {
         return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     @Override
     public String toString() {
         return "Project{" +
                 "projectID=" + projectID +
-                ", user_id=" + user_id +
+                ", user_id=" + userId +
                 ", companyName='" + companyName + '\'' +
                 ", slogan='" + slogan + '\'' +
                 ", amountRaised='" + amountRaised + '\'' +
@@ -237,7 +236,7 @@ public class Project {
                 ", businessModel='" + businessModel + '\'' +
                 ", fullDescription='" + fullDescription + '\'' +
                 ", imageURL='" + imageURL + '\'' +
-                ", PDF_URL='" + pdf_URL + '\'' +
+                ", pdf_URL='" + pdf_URL + '\'' +
                 ", investors='" + investors + '\'' +
                 ", about='" + about + '\'' +
                 ", industry='" + industry + '\'' +
