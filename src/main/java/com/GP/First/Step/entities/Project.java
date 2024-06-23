@@ -24,7 +24,7 @@ public class Project {
     private String companyName;
 
     @CsvBindByName(column = "Slogan")
-    @Column(name = "slogan",length = 65535)
+    @Column(name = "slogan", length = 65535)
     private String slogan;
 
     @CsvBindByName(column = "Amount Raised")
@@ -44,7 +44,7 @@ public class Project {
     private String businessModel;
 
     @CsvBindByName(column = "Full Description")
-    @Column(name = "full_description",length = 65535)
+    @Column(name = "full_description", length = 65535)
     private String fullDescription;
 
     @CsvBindByName(column = "Image URL")
@@ -56,11 +56,11 @@ public class Project {
     private String pdf_URL;
 
     @CsvBindByName(column = "Investors")
-    @Column(name = "investors",length = 65535)
+    @Column(name = "investors", length = 65535)
     private String investors;
 
     @CsvBindByName(column = "About")
-    @Column(name = "about",length = 65535)
+    @Column(name = "about", length = 65535)
     private String about;
 
     @CsvBindByName(column = "Industry")
@@ -87,14 +87,13 @@ public class Project {
     @Column(name = "type")
     private String type;
 
+    @ElementCollection
     @Column(name = "likes")
-    List<String>likes;
+    List<Long> likes;
 
-    @Column(name = "numberOfLikes")
-    private long numberOfLikes;
 
     public Project() {
-        this.likes = new ArrayList<>();
+        this.likes = new ArrayList<Long>();
     }
 
     public long getProjectID() {
@@ -249,28 +248,33 @@ public class Project {
         this.type = type;
     }
 
-    public List<String> getLikes() {
+    public List<Long> getLikes() {
         return likes;
     }
 
-    public void setLikes(List<String> likes) {
+    public void setLikes(List<Long> likes) {
         this.likes = likes;
     }
 
     public long getNumberOfLikes() {
-        return numberOfLikes;
+        return this.likes.size();
     }
 
-    public void setNumberOfLikes(long numberOfLikes) {
-        this.numberOfLikes = numberOfLikes;
+
+    public void addLike(Long userId) {
+        if (this.likes == null) {
+            this.likes = new ArrayList<>();
+        }
+        this.likes.add(userId);
+
     }
 
-    public void addLike(String like) {
-        this.likes.add(like);
+    public void removeLike(Long userId) {
+        if (this.likes != null) {
+            this.likes.remove(userId);
+        }
     }
-    public void removeLike(String like){
-        this.likes.remove(like);
-    }
+
 
     @Override
     public String toString() {
@@ -293,7 +297,7 @@ public class Project {
                 ", website='" + website + '\'' +
                 ", legalName='" + legalName + '\'' +
                 ", type='" + type + '\'' +
-                ", numberOfLikes='" + numberOfLikes+ '\'' +
+                ", numberOfLikes='" + this.likes.size() + '\'' +
                 ", likes='" + likes + '\'' +
                 '}';
     }
