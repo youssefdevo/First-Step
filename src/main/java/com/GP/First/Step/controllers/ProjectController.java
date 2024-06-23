@@ -6,7 +6,6 @@ import com.GP.First.Step.DAO.UserRepository;
 import com.GP.First.Step.DTO.response.ErrorRes;
 import com.GP.First.Step.DTO.response.SuccessRes;
 import com.GP.First.Step.entities.Comment;
-import com.GP.First.Step.entities.Like;
 import com.GP.First.Step.entities.Project;
 import com.GP.First.Step.entities.User;
 import org.springframework.http.HttpStatus;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import com.GP.First.Step.services.CSVUtil;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -164,7 +164,6 @@ public class ProjectController {
         return ResponseEntity.ok(new SuccessRes(HttpStatus.OK, "Comment deleted successfully", null));
     }
 
-
     @ResponseBody
     @PostMapping("/like/{projectID}")
     public ResponseEntity<SuccessRes> like(@PathVariable long projectID) {
@@ -173,13 +172,15 @@ public class ProjectController {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
 
         Project project=projectRepository.findByProjectID(projectID).orElseThrow(() -> new RuntimeException("Project not found"));
-        Like liked=new Like();
-        liked.setUserName(user.getUserName());
 
         //<< check if already user liked this project >>
+
+        if(project.getLikes()==null) {
+            project.setLikes(new ArrayList<>());
+        }
         //remove like
-        if(project.getLikes().contains(liked)) {
-            project.removeLike(liked);
+        if(project.getLikes().contains(user.getUserName())) {
+            project.removeLike(user.getUserName());
             project.setNumberOfLikes(project.getNumberOfLikes()-1);
             projectRepository.save(project);
             return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessRes(HttpStatus.CREATED, "Like removed successfully", project));
@@ -187,11 +188,10 @@ public class ProjectController {
         }
         //add like
         else {
-            project.addLike(liked);
+            project.addLike(user.getUserName());
             project.setNumberOfLikes(project.getNumberOfLikes()+1);
             projectRepository.save(project);
             return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessRes(HttpStatus.CREATED, "Like added successfully", project));
-
         }
     }
 
