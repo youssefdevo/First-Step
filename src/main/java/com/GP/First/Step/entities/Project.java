@@ -3,6 +3,8 @@ package com.GP.First.Step.entities;
 import com.opencsv.bean.CsvBindByName;
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "project_table")
 public class Project {
@@ -79,6 +81,13 @@ public class Project {
     @CsvBindByName(column = "Type")
     @Column(name = "type")
     private String type;
+
+    @ElementCollection
+    @CollectionTable(name = "project_likes", joinColumns = @JoinColumn(name = "project_id"))
+    List<Like>likes;
+
+    @Column(name = "numberOfLikes")
+    private long numberOfLikes;
 
     public long getProjectID() {
         return projectID;
@@ -224,6 +233,28 @@ public class Project {
         this.type = type;
     }
 
+    public void setNumberOfLikes(long numberOfLikes) {
+        this.numberOfLikes = numberOfLikes;
+    }
+
+    public long getNumberOfLikes() {
+        return numberOfLikes;
+    }
+
+    public void setLikes(List<Like> likes) {
+        this.likes = likes;
+    }
+
+    public List<Like> getLikes() {
+        return likes;
+    }
+    public void addLike(Like like) {
+        this.likes.add(like);
+    }
+    public void removeLike(Like like){
+        this.likes.remove(like);
+    }
+
     @Override
     public String toString() {
         return "Project{" +
@@ -245,6 +276,8 @@ public class Project {
                 ", website='" + website + '\'' +
                 ", legalName='" + legalName + '\'' +
                 ", type='" + type + '\'' +
+                ", numberOfLikes='" + numberOfLikes+ '\'' +
+                ", likes='" + likes + '\'' +
                 '}';
     }
 }

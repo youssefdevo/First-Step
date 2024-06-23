@@ -36,6 +36,12 @@ public class ProfileController {
         return ResponseEntity.ok().body(new SuccessRes(HttpStatus.OK, "Your profile got successfully", user));
     }
 
+    @GetMapping("{name}")
+    public ResponseEntity<SuccessRes> getUserProfile(@PathVariable String name) {
+        User user = userRepository.findByUserName(name).orElseThrow(() -> new RuntimeException("User not found"));
+        return ResponseEntity.ok().body(new SuccessRes(HttpStatus.OK, "User profile got successfully", user));
+    }
+
     @PutMapping
     public ResponseEntity<SuccessRes> updateProfile(@RequestBody User updatedUser) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();

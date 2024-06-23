@@ -1,9 +1,12 @@
 package com.GP.First.Step.controllers;
 
+import com.GP.First.Step.DAO.CommentRepository;
 import com.GP.First.Step.DAO.ProjectRepository;
 import com.GP.First.Step.DAO.UserRepository;
 import com.GP.First.Step.DTO.response.ErrorRes;
 import com.GP.First.Step.DTO.response.SuccessRes;
+import com.GP.First.Step.entities.Comment;
+import com.GP.First.Step.entities.Like;
 import com.GP.First.Step.entities.Project;
 import com.GP.First.Step.entities.User;
 import org.springframework.http.HttpStatus;
@@ -22,11 +25,13 @@ import java.util.Optional;
 public class ProjectController {
     private final String csvFilePath = "C:\\FCAI\\Graduation Project/pitch_decks_dataset.csv"; // Set the path to your CSV file
     private final ProjectRepository projectRepository;
-    UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
 
-    public ProjectController(ProjectRepository projectRepository,UserRepository userRepository) {
+    public ProjectController(ProjectRepository projectRepository,UserRepository userRepository,CommentRepository commentRepository) {
         this.projectRepository = projectRepository;
         this.userRepository = userRepository;
+        this.commentRepository=commentRepository;
     }
 
     @GetMapping("/all")
@@ -63,6 +68,7 @@ public class ProjectController {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
         // save user id in his project.
         project.setUserId(user.getId());
+        project.setNumberOfLikes(0);
 
         Project savedProject = projectRepository.save(project);
         return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessRes(HttpStatus.CREATED, "Project created successfully", savedProject));
@@ -117,6 +123,77 @@ public class ProjectController {
         return ResponseEntity.ok(new SuccessRes(HttpStatus.OK, "Project deleted successfully", null));
     }
 
+    @ResponseBody
+    @PostMapping("/addComment/{projectID}")
+    public ResponseEntity<SuccessRes> addComment(@RequestBody Comment comment,@PathVariable long projectID) {
+        // get current user
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+
+        //save comment details
+        comment.setUserName(user.getUserName());
+        comment.setUserID(user.getId());
+        comment.setProjectID(projectID);
+
+        commentRepository.save(comment);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessRes(HttpStatus.CREATED, "Comment added successfully", comment));
+    }
+
+    @GetMapping("/getComments/{id}")
+    public ResponseEntity<?> getProjectComments(@PathVariable long id) {
+        List<Comment> comments = commentRepository.findByProjectID(id);
+        return ResponseEntity.ok(comments);
+    }
+    @ResponseBody
+    @PutMapping("/editComment/{id}")
+    public ResponseEntity<SuccessRes> editComment(@PathVariable long id, @RequestBody Comment updatedComment) {
+        Comment comment =commentRepository.findByCommentID(id).orElseThrow(() -> new RuntimeException("Comment not found"));
+
+        if (updatedComment.getContent() != null)
+            comment.setContent(updatedComment.getContent());
+
+        commentRepository.save(comment);
+        return ResponseEntity.ok().body(new SuccessRes(HttpStatus.OK, "Your comment updated successfully", comment));
+    }
+
+    @DeleteMapping("/deleteComment/{id}")
+    public ResponseEntity<SuccessRes> deleteComment(@PathVariable Long id) {
+        Comment comment = commentRepository.findByCommentID(id).orElseThrow(() -> new RuntimeException("Comment not found"));
+        commentRepository.delete(comment);
+        return ResponseEntity.ok(new SuccessRes(HttpStatus.OK, "Comment deleted successfully", null));
+    }
+
+
+    @ResponseBody
+    @PostMapping("/like/{projectID}")
+    public ResponseEntity<SuccessRes> like(@PathVariable long projectID) {
+        // get current user
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+
+        Project project=projectRepository.findByProjectID(projectID).orElseThrow(() -> new RuntimeException("Project not found"));
+        Like liked=new Like();
+        liked.setUserName(user.getUserName());
+
+        //<< check if already user liked this project >>
+        //remove like
+        if(project.getLikes().contains(liked)) {
+            project.removeLike(liked);
+            project.setNumberOfLikes(project.getNumberOfLikes()-1);
+            projectRepository.save(project);
+            return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessRes(HttpStatus.CREATED, "Like removed successfully", project));
+
+        }
+        //add like
+        else {
+            project.addLike(liked);
+            project.setNumberOfLikes(project.getNumberOfLikes()+1);
+            projectRepository.save(project);
+            return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessRes(HttpStatus.CREATED, "Like added successfully", project));
+
+        }
+    }
 
 
     //to transform data from exel to DB
