@@ -35,6 +35,10 @@ public class Project {
     @Column(name = "year")
     private String year;
 
+    @CsvBindByName(column = "stage")
+    @Column(name = "stage")
+    private String stage;
+
     @CsvBindByName(column = "Business Model")
     @Column(name = "business_model")
     private String businessModel;
@@ -141,6 +145,14 @@ public class Project {
         this.year = year;
     }
 
+    public String getStage() {
+        return stage;
+    }
+
+    public void setStage(String stage) {
+        this.stage = stage;
+    }
+
     public String getBusinessModel() {
         return businessModel;
     }
@@ -181,20 +193,20 @@ public class Project {
         this.investors = investors;
     }
 
-    public String getIndustry() {
-        return industry;
-    }
-
-    public void setIndustry(String industry) {
-        this.industry = industry;
-    }
-
     public String getAbout() {
         return about;
     }
 
     public void setAbout(String about) {
         this.about = about;
+    }
+
+    public String getIndustry() {
+        return industry;
+    }
+
+    public void setIndustry(String industry) {
+        this.industry = industry;
     }
 
     public String getTags() {
@@ -237,21 +249,22 @@ public class Project {
         this.type = type;
     }
 
-    public void setNumberOfLikes(long numberOfLikes) {
-        this.numberOfLikes = numberOfLikes;
-    }
-
-    public long getNumberOfLikes() {
-        return numberOfLikes;
+    public List<String> getLikes() {
+        return likes;
     }
 
     public void setLikes(List<String> likes) {
         this.likes = likes;
     }
 
-    public List<String> getLikes() {
-        return likes;
+    public long getNumberOfLikes() {
+        return numberOfLikes;
     }
+
+    public void setNumberOfLikes(long numberOfLikes) {
+        this.numberOfLikes = numberOfLikes;
+    }
+
     public void addLike(String like) {
         this.likes.add(like);
     }
