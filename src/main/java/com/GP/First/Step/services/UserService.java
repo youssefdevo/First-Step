@@ -21,5 +21,19 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
+    public Optional<User> getUserById(int userId) {
+        return userRepository.findById(userId);
+    }
+
+    public User saveUser(User user) {
+        return userRepository.save(user);
+    }
+
+    public void deleteUser(int userId) {
+        userRepository.deleteById(userId);
+    }
+
+
+
 
 }

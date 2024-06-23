@@ -24,12 +24,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final ObjectMapper mapper;
-    private final TokenBlacklist tokenBlacklist;
 
-    public JwtAuthorizationFilter(JwtUtil jwtUtil, ObjectMapper mapper,TokenBlacklist tokenBlacklist) {
+    public JwtAuthorizationFilter(JwtUtil jwtUtil, ObjectMapper mapper) {
         this.jwtUtil = jwtUtil;
         this.mapper = mapper;
-        this.tokenBlacklist = tokenBlacklist;
     }
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -37,7 +35,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         try {
             String accessToken = jwtUtil.resolveToken(request);
-            if (accessToken == null  || tokenBlacklist.contains(accessToken)) {
+            if (accessToken == null ) {
                 filterChain.doFilter(request, response);
                 return;
             }
