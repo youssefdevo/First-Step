@@ -11,7 +11,6 @@ from flask_cors import CORS  # Import CORS
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
-
 STOPWORDS = set(stopwords.words("english"))
 DATASET = r"C:\Users\Lenovo\Desktop\chat\pitch_decks_dataset.csv"
 
@@ -98,7 +97,7 @@ def do_search(query):
     )
     threshold = 0.95
     results = [df.loc[index, 'Company Name'] for index, score in scores if score >= threshold]
-    return results
+    return results[:5]  # Return only the top 5 results
 
 def similarity(query, index):
     similarity = 0.0
