@@ -14,9 +14,9 @@ public class SearchService {
     @Autowired
     private RestTemplate restTemplate;
 
-    public List<String> searchProjects(String query) {
+    public List<Integer> searchProjects(String query) {
         String url = "http://localhost:5000/search?query=" + query;
-        Map<String, Object> response = restTemplate.getForObject(url, Map.class);
-        return (List<String>) response.get("results");
+        Map<Integer, Object> response = restTemplate.getForObject(url, Map.class);
+        return (List<Integer>) response.get("results");
     }
 }
