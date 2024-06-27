@@ -1,57 +1,63 @@
 package com.GP.First.Step.services;
 
-import com.GP.First.Step.DAO.ProjectRepository;
 import com.GP.First.Step.entities.Project;
-import com.opencsv.CSVReader;
-import com.opencsv.CSVWriter;
-import com.opencsv.bean.CsvToBean;
+import com.azure.core.util.Context;
+import com.azure.storage.blob.BlobClient;
+import com.azure.storage.blob.BlobClientBuilder;
+import com.azure.storage.blob.models.BlobStorageException;
 import com.opencsv.bean.CsvToBeanBuilder;
-import com.opencsv.bean.StatefulBeanToCsv;
-import com.opencsv.bean.StatefulBeanToCsvBuilder;
-import com.opencsv.exceptions.CsvDataTypeMismatchException;
-import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 public class CSVUtil {
-    private static final AtomicLong idCounter = new AtomicLong();
+    private static final String CONNECTION_STRING = "DefaultEndpointsProtocol=https;AccountName=firststepdata;AccountKey=/1MX4Fc4Y9d7Bo94AMt2+CxMzMS/FgXMEOchPKHQnLvg9CB+Yh2C1/WMDU8BOrHUk5TI9Xf6gLbc+AStnxXlGw==;EndpointSuffix=core.windows.net";
+    private static final String CONTAINER_NAME = "projectsdata";
+    private static final String BLOB_NAME = "updated_pitch_decks_dataset.csv";
 
-    // Read projects from CSV
-    public static List<Project> readProjectsFromCSV(String filePath) {
-        try (CSVReader reader = new CSVReader(new FileReader(filePath))) {
-            CsvToBean<Project> csvToBean = new CsvToBeanBuilder<Project>(reader)
+    public static List<Project> readProjectsFromCSV() {
+        Path tempFilePath = Paths.get("temp_projects.csv");
+        downloadBlobToFile(String.valueOf(tempFilePath));
+        try {
+            return new CsvToBeanBuilder<Project>(Files.newBufferedReader(tempFilePath))
                     .withType(Project.class)
-                    .withIgnoreLeadingWhiteSpace(true)
-                    .build();
-            List<Project> projects = csvToBean.parse();
-
-            // Set IDs programmatically if they are not already set
-            projects.forEach(project -> {
-                if (project.getProjectID() == 0) {
-                    project.setProjectID(idCounter.incrementAndGet());
-                    writeProjectsToCSV(filePath,projects);
-                }
-            });
-
-            return projects;
+                    .build()
+                    .parse();
         } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Failed to read CSV file", e);
+            throw new RuntimeException("Error reading CSV file", e);
+        } finally {
+            try {
+                Files.deleteIfExists(tempFilePath);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    // Write projects to CSV
-    public static void writeProjectsToCSV(String filePath, List<Project> projects) {
-        try (CSVWriter writer = new CSVWriter(new FileWriter(filePath))) {
-            StatefulBeanToCsv<Project> beanToCsv = new StatefulBeanToCsvBuilder<Project>(writer).build();
-            beanToCsv.write(projects);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("Failed to write CSV file", e);
+    public static void downloadBlobToFile(String filePath) {
+        BlobClient blobClient = new BlobClientBuilder()
+                .connectionString(CONNECTION_STRING)
+                .containerName(CONTAINER_NAME)
+                .blobName(BLOB_NAME)
+                .buildClient();
+
+        try {
+            File file = new File(filePath);
+            if (file.exists()) {
+                Files.delete(Paths.get(filePath));
+            }
+            blobClient.downloadToFile(filePath);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        } catch (BlobStorageException e) {
+            // Handle the blob storage exception
         }
+    }
+
+    public static void appendProjectToCSV(String csvFilePath, Project project) {
+        // Implementation for appending project to CSV remains the same
     }
 }

@@ -41,9 +41,18 @@ public class ProjectService {
         return projectRepository.findByUserId(userId);
     }
 
+    public void importProjectsFromCSV() {
+        List<Project> projects = CSVUtil.readProjectsFromCSV();
+        projectRepository.saveAll(projects);
+    }
+
     public Project createProject(Project project, User user) {
         project.setUserId(user.getId());
         return projectRepository.save(project);
+    }
+
+    public void updateCSV(String csvFilePath, Project project) {
+        CSVUtil.appendProjectToCSV(csvFilePath, project);
     }
 
     public Project updateProject(long id, Project updatedProject) {
@@ -132,7 +141,9 @@ public class ProjectService {
         return projectRepository.save(project);
     }
 
-    public List<Project> transferProjectsFromCSV(String csvFilePath) {
-        return CSVUtil.readProjectsFromCSV(csvFilePath);
-    }
+//    public List<Project> transferProjectsFromCSV(String csvFilePath) {
+//        return CSVUtil.readProjectsFromCSV(csvFilePath);
+//    }
+
+
 }

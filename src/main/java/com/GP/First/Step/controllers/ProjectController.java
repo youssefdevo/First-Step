@@ -10,6 +10,7 @@ import com.GP.First.Step.entities.Project;
 import com.GP.First.Step.entities.User;
 import com.GP.First.Step.services.ProjectService;
 import com.GP.First.Step.services.UserService;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,8 +29,6 @@ import java.util.Optional;
 public class ProjectController {
     private final ProjectService projectService;
     private final UserService userService;
-
-    private final String csvFilePath = "C:\\FCAI\\Graduation Project/pitch_decks_dataset.csv"; // Set the path to your CSV file
 
     @Autowired
     public ProjectController(ProjectService projectService, UserService userService) {
@@ -66,15 +65,20 @@ public class ProjectController {
         return ResponseEntity.ok(projects);
     }
 
+    @PostConstruct
+    public void importProjectsFromCSV() {
+        projectService.importProjectsFromCSV();
+    }
+
     @ResponseBody
     @PostMapping("/upload")
     public ResponseEntity<SuccessRes> createProject(@RequestBody Project project) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.getUserByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
         Project savedProject = projectService.createProject(project, user);
+        projectService.updateCSV("projects.csv", savedProject);  // Update CSV
         return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessRes(HttpStatus.CREATED, "Project created successfully", savedProject));
     }
-
 
     @ResponseBody
     @PutMapping("/update/{id}")
@@ -126,12 +130,4 @@ public class ProjectController {
         return ResponseEntity.ok(new SuccessRes(HttpStatus.OK, "Like status updated successfully", project));
     }
 
-
-    //to transform data from exel to DB
-    @ResponseBody
-    @PostMapping("/transfer")
-    public ResponseEntity<?> transferProjectsFromCSV() {
-        List<Project> projects = projectService.transferProjectsFromCSV(csvFilePath);
-        return ResponseEntity.ok().body(new SuccessRes(HttpStatus.OK, "Projects transferred successfully", projects));
-    }
 }
