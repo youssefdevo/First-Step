@@ -20,7 +20,7 @@ public class CSVUtil {
 
     public static List<Project> readProjectsFromCSV() {
         Path tempFilePath = Paths.get("temp_projects.csv");
-        downloadBlobToFile(String.valueOf(tempFilePath));
+        downloadBlobToFile(String.valueOf(tempFilePath.toString()));
         try {
             return new CsvToBeanBuilder<Project>(Files.newBufferedReader(tempFilePath))
                     .withType(Project.class)
