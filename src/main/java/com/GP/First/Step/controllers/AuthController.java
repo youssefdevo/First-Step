@@ -73,8 +73,8 @@ public class AuthController {
         String token = jwtUtil.createToken(Optional.of(savedUser));
         LoginRes loginRes = new LoginRes(savedUser.getEmail(), token);
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new SuccessRes(HttpStatus.CREATED, "Signup successful", loginRes));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new SuccessRes(HttpStatus.OK, "Signup successful", loginRes));
     }
 
     @GetMapping("/logout")
