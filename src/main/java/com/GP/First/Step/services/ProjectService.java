@@ -48,11 +48,12 @@ public class ProjectService {
 
     public Project createProject(Project project, User user) {
         project.setUserId(user.getId());
+        updateCSV(project);
         return projectRepository.save(project);
     }
 
-    public void updateCSV(String csvFilePath, Project project) {
-        CSVUtil.appendProjectToCSV(csvFilePath, project);
+    public void updateCSV(Project project) {
+        CSVUtil.appendProjectToCSV(project);
     }
 
     public Project updateProject(long id, Project updatedProject) {

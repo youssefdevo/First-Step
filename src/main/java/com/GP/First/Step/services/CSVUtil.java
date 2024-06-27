@@ -1,12 +1,15 @@
 package com.GP.First.Step.services;
 
 import com.GP.First.Step.entities.Project;
-import com.azure.core.util.Context;
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobClientBuilder;
 import com.azure.storage.blob.models.BlobStorageException;
 import com.opencsv.bean.CsvToBeanBuilder;
+import com.opencsv.CSVWriter;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Arrays;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,12 +23,13 @@ public class CSVUtil {
 
     public static List<Project> readProjectsFromCSV() {
         Path tempFilePath = Paths.get("temp_projects.csv");
-        downloadBlobToFile(String.valueOf(tempFilePath.toString()));
+        downloadBlobToFile(tempFilePath.toString());
         try {
             return new CsvToBeanBuilder<Project>(Files.newBufferedReader(tempFilePath))
                     .withType(Project.class)
                     .build()
                     .parse();
+
         } catch (IOException e) {
             throw new RuntimeException("Error reading CSV file", e);
         } finally {
@@ -54,10 +58,64 @@ public class CSVUtil {
             throw new UncheckedIOException(e);
         } catch (BlobStorageException e) {
             // Handle the blob storage exception
+            throw new RuntimeException("Blob storage exception", e);
         }
     }
 
-    public static void appendProjectToCSV(String csvFilePath, Project project) {
-        // Implementation for appending project to CSV remains the same
+    public static void appendProjectToCSV(Project project) {
+        Path tempFilePath = Paths.get("temp_projects.csv");
+        downloadBlobToFile(tempFilePath.toString());
+        try (CSVWriter writer = new CSVWriter(new FileWriter(tempFilePath.toString(), true))) {
+            String[] projectData = {
+                    project.getCompanyName(),
+                    project.getSlogan(),
+                    project.getAmountRaised().toString(),
+                    String.valueOf(project.getYear()),
+                    project.getStage(),
+                    project.getBusinessModel(),
+                    project.getImageURL(),
+                    project.getFullDescription(),
+                    project.getPdf_URL(),
+                    project.getInvestors(),
+                    project.getAbout(),
+                    project.getIndustry(),
+                    project.getTags(),
+                    project.getCustomerModel(),
+                    project.getWebsite(),
+                    project.getLegalName(),
+                    project.getType(),
+                    String.valueOf(project.getUserId()),
+                    String.valueOf(project.getProjectID())
+            };
+            writer.writeNext(projectData);
+        } catch (IOException e) {
+            throw new RuntimeException("Error appending project to CSV file", e);
+        }
+
+        uploadFileToBlob(tempFilePath.toString());
+
+        try {
+            Files.deleteIfExists(tempFilePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
+
+    private static void uploadFileToBlob(String filePath) {
+        BlobClient blobClient = new BlobClientBuilder()
+                .connectionString(CONNECTION_STRING)
+                .containerName(CONTAINER_NAME)
+                .blobName(BLOB_NAME)
+                .buildClient();
+
+        try {
+            blobClient.uploadFromFile(filePath, true);
+        } catch (BlobStorageException e) {
+            // Handle the blob storage exception
+            throw new RuntimeException("Blob storage exception", e);
+        }
+    }
+
+
 }

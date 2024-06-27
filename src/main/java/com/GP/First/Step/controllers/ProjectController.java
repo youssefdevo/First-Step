@@ -1,9 +1,6 @@
 package com.GP.First.Step.controllers;
 
-import com.GP.First.Step.DAO.CommentRepository;
-import com.GP.First.Step.DAO.ProjectRepository;
-import com.GP.First.Step.DAO.UserRepository;
-import com.GP.First.Step.DTO.response.ErrorRes;
+
 import com.GP.First.Step.DTO.response.SuccessRes;
 import com.GP.First.Step.entities.Comment;
 import com.GP.First.Step.entities.Project;
@@ -17,10 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import com.GP.First.Step.services.CSVUtil;
-
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,7 +51,7 @@ public class ProjectController {
     }
 
 
-    // get user projects by his ID.
+    // get user's projects by his ID.
     @GetMapping("/userID/{id}")
     public ResponseEntity<?> getProjectByUserID(@PathVariable long id) {
         List<Project> projects = projectService.getProjectsByUserId(id);
@@ -76,7 +69,7 @@ public class ProjectController {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.getUserByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
         Project savedProject = projectService.createProject(project, user);
-        projectService.updateCSV("projects.csv", savedProject);  // Update CSV
+
         return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessRes(HttpStatus.CREATED, "Project created successfully", savedProject));
     }
 
