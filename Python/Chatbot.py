@@ -113,7 +113,7 @@ def do_search(query):
     scores = [(index, similarity(query, index)) for index in df.index]
     scores.sort(key=lambda x: x[1], reverse=True)  # Sort scores in descending order
 
-    threshold = 0.1  # Adjust this value as needed
+    threshold = 0.80  # Adjust this value as needed
     results = [int(df.loc[index, 'projectID']) for index, score in scores if score >= threshold]
     return results[:5]  # Return only the top 5 results
 
