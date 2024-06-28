@@ -67,6 +67,7 @@ public class OpenCsvService implements CsvService {
         try (CSVWriter writer = new CSVWriter(new FileWriter(filePath))) {
             for (Project project : projects) {
 //                appendProjectToCSV(project,filePath);
+
                 String[] projectData = {
                         project.getCompanyName(),
                         project.getSlogan(),
