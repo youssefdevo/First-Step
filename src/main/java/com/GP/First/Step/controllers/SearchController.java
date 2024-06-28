@@ -16,7 +16,7 @@ public class SearchController {
     private SearchService searchService;
 
     @GetMapping("/rest/search")
-    public List<Integer> search(@RequestParam String query) {
+    public List<?> search(@RequestParam String query) {
         return searchService.searchProjects(query);
     }
 }
