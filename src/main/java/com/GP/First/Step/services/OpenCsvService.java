@@ -49,7 +49,6 @@ public class OpenCsvService implements CsvService {
                     String.valueOf(project.getUserId()),
                     String.valueOf(project.getProjectID())
             };
-            System.out.println(Arrays.toString(projectData));
             writer.writeNext(projectData);
         } catch (IOException e) {
             throw new RuntimeException("Error appending project to CSV file", e);
