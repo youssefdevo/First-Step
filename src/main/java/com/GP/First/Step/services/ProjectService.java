@@ -124,6 +124,19 @@ public class ProjectService {
     public void deleteProject(long id) {
         Project project = projectRepository.findByProjectID(id).orElseThrow(() -> new RuntimeException("Project not found"));
         projectRepository.delete(project);
+        updateCSVAfterDeletion(id);
+    }
+
+    private void updateCSVAfterDeletion(long projectId) {
+        String tempFilePath = "temp_projects.csv";
+        blobService.downloadToFile(BLOB_NAME, tempFilePath);
+        csvService.deleteProjectFromCSV(projectId, tempFilePath);
+        blobService.uploadFile(BLOB_NAME, tempFilePath);
+        try {
+            Files.deleteIfExists(Paths.get(tempFilePath));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public Comment addComment(Comment comment, User user, long projectID) {

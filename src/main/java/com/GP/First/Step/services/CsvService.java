@@ -7,4 +7,6 @@ import java.util.List;
 public interface CsvService {
     List<Project> readProjectsFromCSV(String filePath);
     void appendProjectToCSV(Project project, String filePath);
+
+    void deleteProjectFromCSV(long projectId, String filePath);
 }
