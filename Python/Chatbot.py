@@ -113,7 +113,7 @@ def do_search(query):
     scores = [(index, similarity(query, index)) for index in df.index]
     scores.sort(key=lambda x: x[1], reverse=True)  # Sort scores in descending order
 
-    threshold = 0.85  # Adjust this value as needed
+    threshold = 0.1  # Adjust this value as needed
     results = [int(df.loc[index, 'projectID']) for index, score in scores if score >= threshold]
     return results[:5]  # Return only the top 5 results
 
@@ -142,13 +142,7 @@ def search():
         return jsonify({'error': 'Query parameter is missing'}), 400
 
     results = do_search(query)
-    if not results:
-        return jsonify({'results': 'Sorry, there are no projects matching your query.'})
-    else:
-        response = {"results": []}
-        for project_id in results:
-            response["results"].append(project_id)
-    return jsonify(response)
+    return jsonify({'results': results})
 
 if __name__ == "__main__":
     initialize()
