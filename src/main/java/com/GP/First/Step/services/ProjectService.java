@@ -9,6 +9,9 @@ import com.GP.First.Step.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -18,11 +21,16 @@ public class ProjectService {
 
     private final ProjectRepository projectRepository;
     private final CommentRepository commentRepository;
+    private final BlobService blobService;
+    private final CsvService csvService;
+    private static final String BLOB_NAME = "updated_pitch_decks_dataset.csv";
 
     @Autowired
-    public ProjectService(ProjectRepository projectRepository, CommentRepository commentRepository) {
+    public ProjectService(ProjectRepository projectRepository, CommentRepository commentRepository, BlobService blobService, CsvService csvService) {
         this.projectRepository = projectRepository;
         this.commentRepository = commentRepository;
+        this.blobService = blobService;
+        this.csvService = csvService;
     }
 
     public List<Project> getAllProjects() {
@@ -42,8 +50,15 @@ public class ProjectService {
     }
 
     public void importProjectsFromCSV() {
-        List<Project> projects = CSVUtil.readProjectsFromCSV();
+        String tempFilePath = "temp_projects.csv";
+        blobService.downloadToFile(BLOB_NAME, tempFilePath);
+        List<Project> projects = csvService.readProjectsFromCSV(tempFilePath);
         projectRepository.saveAll(projects);
+        try {
+            Files.deleteIfExists(Paths.get(tempFilePath));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public Project createProject(Project project, User user) {
@@ -52,8 +67,17 @@ public class ProjectService {
         return projectRepository.save(project);
     }
 
+
     public void updateCSV(Project project) {
-        CSVUtil.appendProjectToCSV(project);
+        String tempFilePath = "temp_projects.csv";
+        blobService.downloadToFile(BLOB_NAME, tempFilePath);
+        csvService.appendProjectToCSV(project, tempFilePath);
+        blobService.uploadFile(BLOB_NAME, tempFilePath);
+        try {
+            Files.deleteIfExists(Paths.get(tempFilePath));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public Project updateProject(long id, Project updatedProject) {
@@ -141,10 +165,6 @@ public class ProjectService {
         }
         return projectRepository.save(project);
     }
-
-//    public List<Project> transferProjectsFromCSV(String csvFilePath) {
-//        return CSVUtil.readProjectsFromCSV(csvFilePath);
-//    }
 
 
 }
