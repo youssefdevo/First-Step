@@ -63,8 +63,9 @@ public class ProjectService {
 
     public Project createProject(Project project, User user) {
         project.setUserId(user.getId());
-        updateCSV(project);
-        return projectRepository.save(project);
+        Project savedProject = projectRepository.save(project);
+        updateCSV(savedProject);
+        return savedProject;
     }
 
 

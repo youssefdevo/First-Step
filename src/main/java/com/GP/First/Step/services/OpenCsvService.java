@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 
 public class OpenCsvService implements CsvService {
@@ -48,6 +49,7 @@ public class OpenCsvService implements CsvService {
                     String.valueOf(project.getUserId()),
                     String.valueOf(project.getProjectID())
             };
+            System.out.println(Arrays.toString(projectData));
             writer.writeNext(projectData);
         } catch (IOException e) {
             throw new RuntimeException("Error appending project to CSV file", e);
