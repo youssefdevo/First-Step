@@ -10,5 +10,4 @@ public class FirstStepApplication {
 
         SpringApplication.run(FirstStepApplication.class, args);
     }
-
 }

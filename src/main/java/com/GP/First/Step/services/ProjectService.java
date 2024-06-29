@@ -69,7 +69,6 @@ public class ProjectService {
 
     }
 
-
     public void updateCSV(Project project) {
         String tempFilePath = "temp_projects.csv";
         blobService.downloadToFile(BLOB_NAME, tempFilePath);
@@ -118,7 +117,20 @@ public class ProjectService {
         if (updatedProject.getType() != null)
             project.setType(updatedProject.getType());
 
-        return projectRepository.save(project);
+        Project savedProject=projectRepository.save(project);
+        updatedCVSAfterEtition(savedProject);
+        return savedProject;
+    }
+    public void updatedCVSAfterEtition(Project project) {
+        String tempFilePath = "temp_projects.csv";
+        blobService.downloadToFile(BLOB_NAME, tempFilePath);
+        csvService.updateProjectToCSV(project, tempFilePath);
+        blobService.uploadFile(BLOB_NAME, tempFilePath);
+        try {
+            Files.deleteIfExists(Paths.get(tempFilePath));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void deleteProject(long id) {

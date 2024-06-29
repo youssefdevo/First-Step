@@ -23,78 +23,58 @@ public class OpenCsvService implements CsvService {
             throw new RuntimeException("Error reading CSV file", e);
         }
     }
-
-
     @Override
     public void appendProjectToCSV(Project project, String filePath) {
         try (CSVWriter writer = new CSVWriter(new FileWriter(filePath, true))) {
-            String[] projectData = {
-                    project.getCompanyName(),
-                    project.getSlogan(),
-                    project.getAmountRaised().toString(),
-                    String.valueOf(project.getYear()),
-                    project.getStage(),
-                    project.getBusinessModel(),
-                    project.getImageURL(),
-                    project.getFullDescription(),
-                    project.getPdf_URL(),
-                    project.getInvestors(),
-                    project.getAbout(),
-                    project.getIndustry(),
-                    project.getTags(),
-                    project.getCustomerModel(),
-                    project.getWebsite(),
-                    project.getLegalName(),
-                    project.getType(),
-                    String.valueOf(project.getUserId()),
-                    String.valueOf(project.getProjectID())
-            };
-            writer.writeNext(projectData);
+            writer.writeNext(convertProjectToStringArray(project));
         } catch (IOException e) {
             throw new RuntimeException("Error appending project to CSV file", e);
         }
     }
     @Override
-    public void deleteProjectFromCSV(long projectId, String filePath) {
-        List<Project> projects = readProjectsFromCSV(filePath);
-        List<Project> updatedProjects = projects.stream()
-                .filter(project -> project.getProjectID() != projectId)
-                .collect(Collectors.toList());
-        writeProjectsToCSV(updatedProjects, filePath);
-    }
+    public void updateProjectToCSV(Project updatedproject, String filePath) {
+        List<Project>projects = readProjectsFromCSV(filePath);
+        for(Project project:projects) {
+            if(project.getProjectID()==updatedproject.getProjectID()) {
+                try (CSVWriter writer = new CSVWriter(new FileWriter(filePath, true))) {
+                    writer.writeNext(convertProjectToStringArray(updatedproject));
+                } catch (IOException e) {
+                    throw new RuntimeException("Error appending project to CSV file", e);
+                }
 
-    private void writeProjectsToCSV(List<Project> projects, String filePath) {
-        try (CSVWriter writer = new CSVWriter(new FileWriter(filePath))) {
-            for (Project project : projects) {
-//                appendProjectToCSV(project,filePath);
-
-                String[] projectData = {
-                        project.getCompanyName(),
-                        project.getSlogan(),
-                        project.getAmountRaised().toString(),
-                        String.valueOf(project.getYear()),
-                        project.getStage(),
-                        project.getBusinessModel(),
-                        project.getImageURL(),
-                        project.getFullDescription(),
-                        project.getPdf_URL(),
-                        project.getInvestors(),
-                        project.getAbout(),
-                        project.getIndustry(),
-                        project.getTags(),
-                        project.getCustomerModel(),
-                        project.getWebsite(),
-                        project.getLegalName(),
-                        project.getType(),
-                        String.valueOf(project.getUserId()),
-                        String.valueOf(project.getProjectID())
-                };
-                writer.writeNext(projectData);
             }
-        } catch (IOException e) {
-            throw new RuntimeException("Error writing projects to CSV file", e);
         }
     }
-
+    @Override
+    public void deleteProjectFromCSV(long projectId, String filePath) {
+        List<Project> projects = readProjectsFromCSV(filePath);
+        for(Project project:projects){
+            if(project.getProjectID()!=projectId)
+                appendProjectToCSV(project,filePath);
+        }
+    }
+    private String[] convertProjectToStringArray(Project project) {
+        return new String[] {
+                project.getCompanyName(),
+                project.getSlogan(),
+                project.getAmountRaised().toString(),
+                String.valueOf(project.getYear()),
+                project.getStage(),
+                project.getBusinessModel(),
+                project.getImageURL(),
+                project.getFullDescription(),
+                project.getPdf_URL(),
+                project.getInvestors(),
+                project.getAbout(),
+                project.getIndustry(),
+                project.getTags(),
+                project.getCustomerModel(),
+                project.getWebsite(),
+                project.getLegalName(),
+                project.getType(),
+                String.valueOf(project.getUserId()),
+                String.valueOf(project.getProjectID())
+        };
+    }
 }
 
