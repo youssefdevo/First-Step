@@ -2,6 +2,8 @@ from flask import Flask, request, jsonify
 import pandas as pd
 import math
 import re
+import nltk
+
 from collections import defaultdict
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
@@ -11,13 +13,13 @@ from io import StringIO
 
 app = Flask(__name__)
 CORS(app)
-
+nltk.download('stopwords')
+nltk.download('punkt')
 STOPWORDS = set(stopwords.words("english"))
 
 
 # Connecting with private storage using connection_string.
 connection_string = 'DefaultEndpointsProtocol=https;AccountName=firststepdata;AccountKey=/1MX4Fc4Y9d7Bo94AMt2+CxMzMS/FgXMEOchPKHQnLvg9CB+Yh2C1/WMDU8BOrHUk5TI9Xf6gLbc+AStnxXlGw==;EndpointSuffix=core.windows.net'
-
 # Initialize the BlobServiceClient
 blob_service_client = BlobServiceClient.from_connection_string(connection_string)
 
@@ -28,11 +30,16 @@ blob_name = 'updated_pitch_decks_dataset.csv'
 # Get a blob client
 blob_client = blob_service_client.get_blob_client(container=container_name, blob=blob_name)
 
-# Download the blob content as text
-blob_content = blob_client.download_blob().content_as_text()
+try:
+    # Download the blob content as text
+    blob_content = blob_client.download_blob().content_as_text()
+    # Load the CSV content into a DataFrame
+    df = pd.read_csv(StringIO(blob_content), encoding='ISO-8859-1')
+    print(df.columns)  # Debug statement to print column names
+except Exception as e:
+    ##print(f"Error loading data: {e}")
+    df = pd.DataFrame()  # Assign an empty DataFrame or handle it accordingly
 
-# Load the CSV content into a DataFrame
-df = pd.read_csv(StringIO(blob_content), encoding='ISO-8859-1')
 
 # Initialize global variables
 N = len(df)
@@ -50,20 +57,20 @@ def initialize_terms_and_postings():
     global vocabulary, postings
     for index, row in df.iterrows():
         document = (
-            str(row['Full Description']) + " " +
-            str(row['Slogan']) + " " +
-            str(row['Amount Raised']) + " " +
-            str(row['Year']) + " " +
-            str(row['Stage']) + " " +
-            str(row['Business Model']) + " " +
-            str(row['Investors']) + " " +
-            str(row['About']) + " " +
-            str(row['Industry']) + " " +
-            str(row['Tags']) + " " +
-            str(row['Customer Model']) + " " +
-            str(row['Website']) + " " +
-            str(row['Legal Name']) + " " +
-            str(row['Type'])
+                str(row['Full Description']) + " " +
+                str(row['Slogan']) + " " +
+                str(row['Amount Raised']) + " " +
+                str(row['Year']) + " " +
+                str(row['Stage']) + " " +
+                str(row['Business Model']) + " " +
+                str(row['Investors']) + " " +
+                str(row['About']) + " " +
+                str(row['Industry']) + " " +
+                str(row['Tags']) + " " +
+                str(row['Customer Model']) + " " +
+                str(row['Website']) + " " +
+                str(row['Legal Name']) + " " +
+                str(row['Type'])
         )
         if not isinstance(document, str):
             continue
@@ -135,6 +142,11 @@ def remove_digits(text):
     regex = re.compile(r"\d")
     return re.sub(regex, "", text)
 
+@app.route('/')
+def home():
+    return "Hello, this is the default route!"
+
+
 @app.route('/search', methods=['GET'])
 def search():
     query = request.args.get('query')
@@ -143,7 +155,7 @@ def search():
 
     results = do_search(query)
     return jsonify({'results': results})
-
-if __name__ == "__main__":
-    initialize()
-    app.run(host='0.0.0.0', port=5000)
+initialize()
+#if __name__ == "__main__":
+#    initialize()
+#    app.run(host='0.0.0.0', port=5000)
