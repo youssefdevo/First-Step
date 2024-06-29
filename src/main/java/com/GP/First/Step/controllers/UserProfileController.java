@@ -1,7 +1,6 @@
 package com.GP.First.Step.controllers;
 
 
-import com.GP.First.Step.DAO.UserRepository;
 import com.GP.First.Step.DTO.request.ResetPasswordReq;
 import com.GP.First.Step.DTO.response.ErrorRes;
 import com.GP.First.Step.services.ProfileService;
@@ -12,17 +11,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/rest/profile")
-public class ProfileController {
+public class UserProfileController {
 
     private final ProfileService profileService;
 
     @Autowired
-    public ProfileController(ProfileService profileService) {
+    public UserProfileController(ProfileService profileService) {
         this.profileService = profileService;
     }
 
