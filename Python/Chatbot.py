@@ -12,7 +12,7 @@ from azure.storage.blob import BlobServiceClient  # Import BlobServiceClient to 
 from io import StringIO  # Import StringIO to handle in-memory file objects
 import schedule  # Import schedule library for scheduling tasks
 import threading  # Import threading to run the scheduler in a separate thread
-import time  # Import time for time-related
+import time  # Import time for time-related functions
 
 
 app = Flask(__name__)  # Create a Flask application instance
@@ -199,6 +199,6 @@ scheduler_thread = threading.Thread(target=run_scheduler)
 scheduler_thread.start()
 
 # Uncomment the following lines to run the application locally
-#if __name__ == "__main__":
-#    initialize()
-#    app.run(host='0.0.0.0', port=5000)
+if __name__ == "__main__":
+    initialize()
+    app.run(host='0.0.0.0', port=5000)

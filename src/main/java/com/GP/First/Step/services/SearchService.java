@@ -18,7 +18,7 @@ public class SearchService {
     private RestTemplate restTemplate;
 
     public List<?> searchProjects(String query) {
-        String url = "https://firststepchatbot.azurewebsites.net/search?query=" + query;
+        String url = "http://localhost:5000/search?query=" + query;
         List<?> results = new ArrayList<>();
         try {
             Map response = restTemplate.getForObject(url, Map.class);
