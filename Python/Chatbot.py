@@ -199,6 +199,6 @@ scheduler_thread = threading.Thread(target=run_scheduler)
 scheduler_thread.start()
 
 # Uncomment the following lines to run the application locally
-if __name__ == "__main__":
-    initialize()
-    app.run(host='0.0.0.0', port=5000)
+#if __name__ == "__main__":
+#    initialize()
+#    app.run(host='0.0.0.0', port=5000)
