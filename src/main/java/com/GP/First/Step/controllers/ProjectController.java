@@ -58,10 +58,10 @@ public class ProjectController {
         return ResponseEntity.ok(projects);
     }
 
-    /*@PostConstruct
-    public void importProjectsFromCSV() {
-        projectService.importProjectsFromCSV();
-    }*/
+//    @PostConstruct
+//    public void importProjectsFromCSV() {
+//        projectService.importProjectsFromCSV();
+//    }
 
     @ResponseBody
     @PostMapping("/upload")

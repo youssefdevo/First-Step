@@ -118,10 +118,10 @@ public class ProjectService {
             project.setType(updatedProject.getType());
 
         Project savedProject=projectRepository.save(project);
-        updatedCVSAfterEtition(savedProject);
+        updatedCVSAfterEdition(savedProject);
         return savedProject;
     }
-    public void updatedCVSAfterEtition(Project project) {
+    public void updatedCVSAfterEdition(Project project) {
         String tempFilePath = "temp_projects.csv";
         blobService.downloadToFile(BLOB_NAME, tempFilePath);
         csvService.updateProjectToCSV(project, tempFilePath);
@@ -136,13 +136,13 @@ public class ProjectService {
     public void deleteProject(long id) {
         Project project = projectRepository.findByProjectID(id).orElseThrow(() -> new RuntimeException("Project not found"));
         projectRepository.delete(project);
-        updateCSVAfterDeletion(id);
+        updateCSVAfterDeletion(project);
     }
 
-    private void updateCSVAfterDeletion(long projectId) {
+    private void updateCSVAfterDeletion(Project project) {
         String tempFilePath = "temp_projects.csv";
         blobService.downloadToFile(BLOB_NAME, tempFilePath);
-        csvService.deleteProjectFromCSV(projectId, tempFilePath);
+        csvService.deleteProjectFromCSV(project, tempFilePath);
         blobService.uploadFile(BLOB_NAME, tempFilePath);
         try {
             Files.deleteIfExists(Paths.get(tempFilePath));
