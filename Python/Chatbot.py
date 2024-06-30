@@ -12,7 +12,7 @@ from azure.storage.blob import BlobServiceClient  # Import BlobServiceClient to 
 from io import StringIO  # Import StringIO to handle in-memory file objects
 import schedule  # Import schedule library for scheduling tasks
 import threading  # Import threading to run the scheduler in a separate thread
-import time  # Import time for time-related functions
+import time  # Import time for time-related
 
 
 app = Flask(__name__)  # Create a Flask application instance
