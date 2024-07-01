@@ -86,7 +86,10 @@ public class ProjectController {
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<SuccessRes> deleteProject(@PathVariable Long id) {
-        projectService.deleteProject(id);
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userService.getUserByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+
+        projectService.deleteProject(user, id);
         return ResponseEntity.ok(new SuccessRes(HttpStatus.OK, "Project deleted successfully", null));
     }
 

@@ -9,61 +9,61 @@ import java.util.List;
 // temp project for retrieving projects from CSV file.
 public class ProjectT {
 
-    @CsvBindByName(column = "ProjectID")
+    @CsvBindByName(column = "PROJECTID")
     private long id;
 
-    @CsvBindByName(column = "userId")
+    @CsvBindByName(column = "USERID")
     private long userId;
 
-    @CsvBindByName(column = "Company Name")
+    @CsvBindByName(column = "COMPANY NAME")
     private String companyName;
 
-    @CsvBindByName(column = "Slogan")
+    @CsvBindByName(column = "SLOGAN")
     private String slogan;
 
-    @CsvBindByName(column = "Amount Raised")
+    @CsvBindByName(column = "AMOUNT RAISED")
     private String amountRaised;
 
-    @CsvBindByName(column = "Year")
+    @CsvBindByName(column = "YEAR")
     private String year;
 
-    @CsvBindByName(column = "Stage")
+    @CsvBindByName(column = "STAGE")
     private String stage;
 
-    @CsvBindByName(column = "Business Model")
+    @CsvBindByName(column = "BUSINESS MODEL")
     private String businessModel;
 
-    @CsvBindByName(column = "Full Description")
+    @CsvBindByName(column = "FULL DESCRIPTION")
     private String fullDescription;
 
-    @CsvBindByName(column = "Image URL")
+    @CsvBindByName(column = "IMAGE URL")
     private String imageURL;
 
     @CsvBindByName(column = "PDF URL")
-    private String pdf_URL;
+    private String pdfURL;
 
-    @CsvBindByName(column = "Investors")
+    @CsvBindByName(column = "INVESTORS")
     private String investors;
 
-    @CsvBindByName(column = "About")
+    @CsvBindByName(column = "ABOUT")
     private String about;
 
-    @CsvBindByName(column = "Industry")
+    @CsvBindByName(column = "INDUSTRY")
     private String industry;
 
-    @CsvBindByName(column = "Tags")
+    @CsvBindByName(column = "TAGS")
     private String tags;
 
-    @CsvBindByName(column = "Customer Model")
+    @CsvBindByName(column = "CUSTOMER MODEL")
     private String customerModel;
 
-    @CsvBindByName(column = "Website")
+    @CsvBindByName(column = "WEBSITE")
     private String website;
 
-    @CsvBindByName(column = "Legal Name")
+    @CsvBindByName(column = "LEGAL NAME")
     private String legalName;
 
-    @CsvBindByName(column = "Type")
+    @CsvBindByName(column = "TYPE")
     private String type;
 
 
@@ -155,11 +155,11 @@ public class ProjectT {
     }
 
     public String getPdf_URL() {
-        return pdf_URL;
+        return pdfURL;
     }
 
     public void setPdf_URL(String pdf_URL) {
-        this.pdf_URL = pdf_URL;
+        this.pdfURL = pdf_URL;
     }
 
     public String getInvestors() {

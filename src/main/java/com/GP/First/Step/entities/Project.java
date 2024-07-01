@@ -10,82 +10,82 @@ import java.util.List;
 @Table(name = "project_table")
 public class Project {
 
-    @CsvBindByName(column = "ProjectID")
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false, nullable = false)
     private long id;
 
-    @CsvBindByName(column = "userId")
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @CsvBindByName(column = "Company Name")
+
     @Column(name = "companyName")
     private String companyName;
 
-    @CsvBindByName(column = "Slogan")
+
     @Column(name = "slogan", length = 65535)
     private String slogan;
 
-    @CsvBindByName(column = "Amount Raised")
+
     @Column(name = "amount_raised")
     private String amountRaised;
 
-    @CsvBindByName(column = "Year")
+
     @Column(name = "year")
     private String year;
 
-    @CsvBindByName(column = "Stage")
+
     @Column(name = "stage")
     private String stage;
 
-    @CsvBindByName(column = "Business Model")
+
     @Column(name = "business_model")
     private String businessModel;
 
-    @CsvBindByName(column = "Full Description")
+
     @Column(name = "full_description", length = 65535)
     private String fullDescription;
 
-    @CsvBindByName(column = "Image URL")
+
     @Column(name = "image_url")
     private String imageURL;
 
-    @CsvBindByName(column = "PDF URL")
+
     @Column(name = "pdf_url")
     private String pdf_URL;
 
-    @CsvBindByName(column = "Investors")
+
     @Column(name = "investors", length = 65535)
     private String investors;
 
-    @CsvBindByName(column = "About")
+
     @Column(name = "about", length = 65535)
     private String about;
 
-    @CsvBindByName(column = "Industry")
+
     @Column(name = "industry")
     private String industry;
 
-    @CsvBindByName(column = "Tags")
+
     @Column(name = "tags")
     private String tags;
 
-    @CsvBindByName(column = "Customer Model")
+
     @Column(name = "customer_model")
     private String customerModel;
 
-    @CsvBindByName(column = "Website")
+
     @Column(name = "website")
     private String website;
 
-    @CsvBindByName(column = "Legal Name")
+
     @Column(name = "legal_name")
     private String legalName;
 
-    @CsvBindByName(column = "Type")
+
     @Column(name = "type")
     private String type;
 

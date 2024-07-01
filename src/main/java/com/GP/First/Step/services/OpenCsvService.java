@@ -18,7 +18,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class OpenCsvService implements CsvService {
@@ -43,7 +42,6 @@ public class OpenCsvService implements CsvService {
             projectsTemp.forEach(project -> {
                 Project project1 = convertProjectTempToProject(project);
                 projects.add(project1);
-
             });
 
             return projects;
@@ -94,14 +92,13 @@ public class OpenCsvService implements CsvService {
         List<ProjectT> tempProjects = new ArrayList<>();
 
         // removing the project
-        for (Iterator<Project> iterator = projects.iterator(); iterator.hasNext();) {
-            Project p = iterator.next();
-            if (p.getProjectID() == project.getProjectID()) {
-                iterator.remove();
-            } else {
-                tempProjects.add(convertProjectToProjectT(p));
+        for (int i = 0; i < projects.size(); i++) {
+            if (projects.get(i).getProjectID() == project.getProjectID()) {
+                continue;
             }
+            tempProjects.add(convertProjectToProjectT(projects.get(i)));
         }
+
         writeProjectsToCSV(filePath, tempProjects);
     }
 
@@ -109,7 +106,7 @@ public class OpenCsvService implements CsvService {
         return new String[]{
                 project.getCompanyName(),
                 project.getSlogan(),
-                project.getAmountRaised().toString(),
+                project.getAmountRaised(),
                 String.valueOf(project.getYear()),
                 project.getStage(),
                 project.getBusinessModel(),
@@ -126,30 +123,6 @@ public class OpenCsvService implements CsvService {
                 project.getType(),
                 String.valueOf(project.getUser().getId()),
                 String.valueOf(project.getProjectID())
-        };
-    }
-
-    private String[] convertProjectToStringArray(ProjectT project) {
-        return new String[]{
-                project.getCompanyName(),
-                project.getSlogan(),
-                project.getAmountRaised().toString(),
-                String.valueOf(project.getYear()),
-                project.getStage(),
-                project.getBusinessModel(),
-                project.getImageURL(),
-                project.getFullDescription(),
-                project.getPdf_URL(),
-                project.getInvestors(),
-                project.getAbout(),
-                project.getIndustry(),
-                project.getTags(),
-                project.getCustomerModel(),
-                project.getWebsite(),
-                project.getLegalName(),
-                project.getType(),
-                String.valueOf(project.getUserId()),
-                String.valueOf(project.getId())
         };
     }
 

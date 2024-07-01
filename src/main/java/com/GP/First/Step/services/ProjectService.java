@@ -143,8 +143,13 @@ public class ProjectService {
         }
     }
 
-    public void deleteProject(long id) {
+    public void deleteProject(User user, long id) {
         Project project = projectRepository.findById(id).orElseThrow(() -> new RuntimeException("Project not found"));
+
+        if(user.getId()!=project.getUser().getId()) {
+            throw new RuntimeException("You are not allowed to Delete this project");
+        }
+
         projectRepository.delete(project);
         updateCSVAfterDeletion(project);
     }
