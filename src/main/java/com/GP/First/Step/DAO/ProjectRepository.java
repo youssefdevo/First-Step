@@ -7,11 +7,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ProjectRepository extends JpaRepository<Project, Integer> {
-
-    Optional<Project> findByProjectID(long projectID);
+    Optional<Project> findById(long projectId);
     List<Project> findByUserId(long userId);
     List<Project> findByCompanyName(String companyName);
-    List<Project>findAll();
+    List<Project> findAll();
     void delete(Project project);
-
 }

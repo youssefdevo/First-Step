@@ -1,6 +1,7 @@
 package com.GP.First.Step.Config;
 import com.GP.First.Step.DAO.CommentRepository;
 import com.GP.First.Step.DAO.ProjectRepository;
+import com.GP.First.Step.DAO.UserRepository;
 import com.GP.First.Step.services.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,8 +20,8 @@ public class AppConfig {
     }
 
     @Bean
-    public CsvService csvService() {
-        return new OpenCsvService();
+    public CsvService csvService(UserRepository userRepository) {
+        return new OpenCsvService(userRepository);
     }
 
     @Bean

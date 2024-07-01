@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -58,10 +59,10 @@ public class ProjectController {
         return ResponseEntity.ok(projects);
     }
 
-//    @PostConstruct
-//    public void importProjectsFromCSV() {
-//        projectService.importProjectsFromCSV();
-//    }
+    /*@PostConstruct
+    public void importProjectsFromCSV() {
+        projectService.importProjectsFromCSV();
+    }*/
 
     @ResponseBody
     @PostMapping("/upload")
@@ -85,6 +86,7 @@ public class ProjectController {
         projectService.deleteProject(id);
         return ResponseEntity.ok(new SuccessRes(HttpStatus.OK, "Project deleted successfully", null));
     }
+
     @ResponseBody
     @PostMapping("/addComment/{projectID}")
     public ResponseEntity<SuccessRes> addComment(@RequestBody Comment comment, @PathVariable long projectID) {

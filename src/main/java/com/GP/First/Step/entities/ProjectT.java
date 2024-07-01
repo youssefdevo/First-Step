@@ -6,115 +6,88 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Table(name = "project_table")
-public class Project {
+// temp project for retrieving projects from CSV file.
+public class ProjectT {
 
     @CsvBindByName(column = "ProjectID")
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", updatable = false, nullable = false)
     private long id;
 
     @CsvBindByName(column = "userId")
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private long userId;
 
     @CsvBindByName(column = "Company Name")
-    @Column(name = "companyName")
     private String companyName;
 
     @CsvBindByName(column = "Slogan")
-    @Column(name = "slogan", length = 65535)
     private String slogan;
 
     @CsvBindByName(column = "Amount Raised")
-    @Column(name = "amount_raised")
     private String amountRaised;
 
     @CsvBindByName(column = "Year")
-    @Column(name = "year")
     private String year;
 
     @CsvBindByName(column = "Stage")
-    @Column(name = "stage")
     private String stage;
 
     @CsvBindByName(column = "Business Model")
-    @Column(name = "business_model")
     private String businessModel;
 
     @CsvBindByName(column = "Full Description")
-    @Column(name = "full_description", length = 65535)
     private String fullDescription;
 
     @CsvBindByName(column = "Image URL")
-    @Column(name = "image_url")
     private String imageURL;
 
     @CsvBindByName(column = "PDF URL")
-    @Column(name = "pdf_url")
     private String pdf_URL;
 
     @CsvBindByName(column = "Investors")
-    @Column(name = "investors", length = 65535)
     private String investors;
 
     @CsvBindByName(column = "About")
-    @Column(name = "about", length = 65535)
     private String about;
 
     @CsvBindByName(column = "Industry")
-    @Column(name = "industry")
     private String industry;
 
     @CsvBindByName(column = "Tags")
-    @Column(name = "tags")
     private String tags;
 
     @CsvBindByName(column = "Customer Model")
-    @Column(name = "customer_model")
     private String customerModel;
 
     @CsvBindByName(column = "Website")
-    @Column(name = "website")
     private String website;
 
     @CsvBindByName(column = "Legal Name")
-    @Column(name = "legal_name")
     private String legalName;
 
     @CsvBindByName(column = "Type")
-    @Column(name = "type")
     private String type;
 
-    @ElementCollection
-    @Column(name = "likes")
+
     List<Long> likes;
 
 
-
-
-
-    public Project() {
+    public ProjectT() {
         this.likes = new ArrayList<Long>();
     }
 
-    public long getProjectID() {
+    public long getId() {
         return id;
     }
 
-    public void setProjectID(long projectID) {
-        this.id = projectID;
+    public void setId(long id) {
+        this.id = id;
     }
 
-    public User getUser() {
-        return user;
+    public long getUserId() {
+        return userId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 
     public String getCompanyName() {
@@ -260,50 +233,6 @@ public class Project {
     public void setLikes(List<Long> likes) {
         this.likes = likes;
     }
-
-    public long getNumberOfLikes() {
-        return this.likes.size();
-    }
-
-
-    public void addLike(Long userId) {
-        if (this.likes == null) {
-            this.likes = new ArrayList<>();
-        }
-        this.likes.add(userId);
-
-    }
-
-    public void removeLike(Long userId) {
-        if (this.likes != null) {
-            this.likes.remove(userId);
-        }
-    }
-
-
-    @Override
-    public String toString() {
-        return "Project{" +
-                "projectID=" + id +
-                ", user=" + user +
-                ", companyName='" + companyName + '\'' +
-                ", slogan='" + slogan + '\'' +
-                ", amountRaised='" + amountRaised + '\'' +
-                ", year='" + year + '\'' +
-                ", stage='" + stage + '\'' +
-                ", businessModel='" + businessModel + '\'' +
-                ", fullDescription='" + fullDescription + '\'' +
-                ", imageURL='" + imageURL + '\'' +
-                ", pdf_URL='" + pdf_URL + '\'' +
-                ", investors='" + investors + '\'' +
-                ", about='" + about + '\'' +
-                ", industry='" + industry + '\'' +
-                ", tags='" + tags + '\'' +
-                ", customerModel='" + customerModel + '\'' +
-                ", website='" + website + '\'' +
-                ", legalName='" + legalName + '\'' +
-                ", type='" + type + '\'' +
-                ", likes=" + likes +
-                '}';
-    }
 }
+
+

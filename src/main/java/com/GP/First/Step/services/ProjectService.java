@@ -42,7 +42,7 @@ public class ProjectService {
     }
 
     public Optional<Project> getProjectById(long id) {
-        return projectRepository.findByProjectID(id);
+        return projectRepository.findById(id);
     }
 
     public List<Project> getProjectsByUserId(long userId) {
@@ -53,7 +53,7 @@ public class ProjectService {
         String tempFilePath = "temp_projects.csv";
         blobService.downloadToFile(BLOB_NAME, tempFilePath);
         List<Project> projects = csvService.readProjectsFromCSV(tempFilePath);
-        projectRepository.saveAll(projects);
+       projectRepository.saveAll(projects);
         try {
             Files.deleteIfExists(Paths.get(tempFilePath));
         } catch (IOException e) {
@@ -62,7 +62,7 @@ public class ProjectService {
     }
 
     public Project createProject(Project project, User user) {
-        project.setUserId(user.getId());
+        project.setUser(user);
         Project savedProject = projectRepository.save(project);
         updateCSV(savedProject);
         return savedProject;
@@ -82,7 +82,7 @@ public class ProjectService {
     }
 
     public Project updateProject(long id, Project updatedProject) {
-        Project project = projectRepository.findByProjectID(id).orElseThrow(() -> new RuntimeException("Project not found"));
+        Project project = projectRepository.findById(id).orElseThrow(() -> new RuntimeException("Project not found"));
 
         if (updatedProject.getCompanyName() != null)
             project.setCompanyName(updatedProject.getCompanyName());
@@ -134,7 +134,7 @@ public class ProjectService {
     }
 
     public void deleteProject(long id) {
-        Project project = projectRepository.findByProjectID(id).orElseThrow(() -> new RuntimeException("Project not found"));
+        Project project = projectRepository.findById(id).orElseThrow(() -> new RuntimeException("Project not found"));
         projectRepository.delete(project);
         updateCSVAfterDeletion(project);
     }
@@ -153,17 +153,18 @@ public class ProjectService {
 
     public Comment addComment(Comment comment, User user, long projectID) {
         comment.setUserName(user.getUserName());
-        comment.setUserID(user.getId());
-        comment.setProjectID(projectID);
+        comment.setUser(user);
+        Project project = projectRepository.findById(projectID).orElseThrow(() -> new RuntimeException("Project not found"));
+        comment.setProject(project);
         return commentRepository.save(comment);
     }
 
     public List<Comment> getCommentsByProjectId(long id) {
-        return commentRepository.findByProjectID(id);
+        return commentRepository.findByProject_Id(id);
     }
 
     public Comment updateComment(long id, Comment updatedComment) {
-        Comment comment = commentRepository.findByCommentID(id).orElseThrow(() -> new RuntimeException("Comment not found"));
+        Comment comment = commentRepository.findById(id).orElseThrow(() -> new RuntimeException("Comment not found"));
 
         if (updatedComment.getContent() != null)
             comment.setContent(updatedComment.getContent());
@@ -172,12 +173,12 @@ public class ProjectService {
     }
 
     public void deleteComment(long id) {
-        Comment comment = commentRepository.findByCommentID(id).orElseThrow(() -> new RuntimeException("Comment not found"));
+        Comment comment = commentRepository.findById(id).orElseThrow(() -> new RuntimeException("Comment not found"));
         commentRepository.delete(comment);
     }
 
     public Project likeProject(long projectID, User user) {
-        Project project = projectRepository.findByProjectID(projectID).orElseThrow(() -> new RuntimeException("Project not found"));
+        Project project = projectRepository.findById(projectID).orElseThrow(() -> new RuntimeException("Project not found"));
 
         if (project.getLikes() == null) {
             project.setLikes(new ArrayList<>());

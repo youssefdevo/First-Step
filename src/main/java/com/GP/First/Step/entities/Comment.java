@@ -9,38 +9,46 @@ public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "commentID")
-    private long commentID;
-    @Column(name = "projectID")
-    long projectID;
-    @Column(name = "userID")
-    long userID;
+    private long id;
+
+    @ManyToOne
+    @JoinColumn(name = "project_id", nullable = false)
+    private Project project;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     @Column(name = "userName")
-    String userName;
+    private String userName;
+
     @Column(name = "content")
-    String content;
+    private String content;
+
+    public Comment() {}
 
     public long getCommentID() {
-        return commentID;
+        return id;
     }
 
     public void setCommentID(long commentID) {
-        this.commentID = commentID;
+        this.id = commentID;
     }
 
-    public long getUserID() {
-        return userID;
+    public Project getProject() {
+        return project;
     }
 
-    public void setUserID(long userID) {
-        this.userID = userID;
+    public void setProject(Project project) {
+        this.project = project;
     }
 
-    public long getProjectID() {
-        return projectID;
+    public User getUser() {
+        return user;
     }
 
-    public void setProjectID(long projectID) {
-        this.projectID = projectID;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getUserName() {
@@ -62,9 +70,9 @@ public class Comment {
     @Override
     public String toString() {
         return "Comment{" +
-                "commentID=" + commentID +
-                ", userID='" + userID + '\'' +
-                ", projectID='" + projectID + '\'' +
+                "commentID=" + id +
+                ", project=" + project +
+                ", user=" + user +
                 ", userName='" + userName + '\'' +
                 ", content='" + content + '\'' +
                 '}';
