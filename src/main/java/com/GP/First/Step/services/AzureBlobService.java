@@ -4,6 +4,8 @@ import com.GP.First.Step.entities.Project;
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobClientBuilder;
 import com.azure.storage.blob.models.BlobStorageException;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,15 +14,22 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
+
 public class AzureBlobService implements BlobService {
-    private static final String CONNECTION_STRING = "DefaultEndpointsProtocol=https;AccountName=firststepdata;AccountKey=/1MX4Fc4Y9d7Bo94AMt2+CxMzMS/FgXMEOchPKHQnLvg9CB+Yh2C1/WMDU8BOrHUk5TI9Xf6gLbc+AStnxXlGw==;EndpointSuffix=core.windows.net";
-    private static final String CONTAINER_NAME = "projectsdata";
+    private final String connectionString;
+    private final String containerName;
+
+
+    public AzureBlobService(String connectionString, String containerName) {
+        this.connectionString = connectionString;
+        this.containerName = containerName;
+    }
 
     @Override
     public void downloadToFile(String blobName, String filePath) {
         BlobClient blobClient = new BlobClientBuilder()
-                .connectionString(CONNECTION_STRING)
-                .containerName(CONTAINER_NAME)
+                .connectionString(connectionString)
+                .containerName(containerName)
                 .blobName(blobName)
                 .buildClient();
 
@@ -40,8 +49,8 @@ public class AzureBlobService implements BlobService {
     @Override
     public void uploadFile(String blobName, String filePath) {
         BlobClient blobClient = new BlobClientBuilder()
-                .connectionString(CONNECTION_STRING)
-                .containerName(CONTAINER_NAME)
+                .connectionString(connectionString)
+                .containerName(containerName)
                 .blobName(blobName)
                 .buildClient();
 

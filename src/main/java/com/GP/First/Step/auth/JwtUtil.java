@@ -3,6 +3,7 @@ package com.GP.First.Step.auth;
 import com.GP.First.Step.entities.User;
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 
@@ -14,18 +15,21 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class JwtUtil {
 
-
-    private final String secret_key = "mysecretkey";
-    private long accessTokenValidity = 60*60*1000;
+    private final String secret_key;
+    private long accessTokenValidity;
 
     private final JwtParser jwtParser;
 
     private final String TOKEN_HEADER = "Authorization";
     private final String TOKEN_PREFIX = "Bearer ";
 
-    public JwtUtil(){
+    public JwtUtil(@Value("${jwt.secret_key}") String secret_key,
+                   @Value("${jwt.accessTokenValidity}") long accessTokenValidity) {
+        this.secret_key = secret_key;
+        this.accessTokenValidity = accessTokenValidity;
         this.jwtParser = Jwts.parser().setSigningKey(secret_key);
     }
+
 
     public String createToken(Optional<User> user) {
         Claims claims = Jwts.claims().setSubject(user.get().getEmail());

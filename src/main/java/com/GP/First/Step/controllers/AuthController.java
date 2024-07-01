@@ -80,6 +80,7 @@ public class AuthController {
     @GetMapping("/logout")
     public ResponseEntity<?> logout() {
         SecurityContextHolder.clearContext();
+
         return ResponseEntity.ok().body(new SuccessRes(HttpStatus.OK, "Logout successful", null));
     }
 }

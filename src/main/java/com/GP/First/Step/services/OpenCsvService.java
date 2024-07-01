@@ -62,11 +62,14 @@ public class OpenCsvService implements CsvService {
 
     @Override
     public void appendProjectToCSV(Project project, String filePath) {
-        try (CSVWriter writer = new CSVWriter(new FileWriter(filePath, true))) {
-            writer.writeNext(convertProjectToStringArray(project));
-        } catch (IOException e) {
-            throw new RuntimeException("Error appending project to CSV file", e);
+        List<Project> projects = readProjectsFromCSV(filePath);
+        List<ProjectT> tempProjects = new ArrayList<>();
+        for (Project value : projects) {
+            tempProjects.add(convertProjectToProjectT(value));
         }
+        tempProjects.add(convertProjectToProjectT(project));
+
+        writeProjectsToCSV(filePath, tempProjects);
     }
 
     @Override
@@ -100,30 +103,6 @@ public class OpenCsvService implements CsvService {
         }
 
         writeProjectsToCSV(filePath, tempProjects);
-    }
-
-    private String[] convertProjectToStringArray(Project project) {
-        return new String[]{
-                project.getCompanyName(),
-                project.getSlogan(),
-                project.getAmountRaised(),
-                String.valueOf(project.getYear()),
-                project.getStage(),
-                project.getBusinessModel(),
-                project.getImageURL(),
-                project.getFullDescription(),
-                project.getPdf_URL(),
-                project.getInvestors(),
-                project.getAbout(),
-                project.getIndustry(),
-                project.getTags(),
-                project.getCustomerModel(),
-                project.getWebsite(),
-                project.getLegalName(),
-                project.getType(),
-                String.valueOf(project.getUser().getId()),
-                String.valueOf(project.getProjectID())
-        };
     }
 
     private Project convertProjectTempToProject(ProjectT project) {
