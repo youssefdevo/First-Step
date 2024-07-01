@@ -66,7 +66,6 @@ public class ProjectService {
         Project savedProject = projectRepository.save(project);
         updateCSV(savedProject);
         return savedProject;
-
     }
 
     public void updateCSV(Project project) {
@@ -81,9 +80,23 @@ public class ProjectService {
         }
     }
 
-    public Project updateProject(long id, Project updatedProject) {
+    public Project updateProject(User user, long id, Project updatedProject) {
+
         Project project = projectRepository.findById(id).orElseThrow(() -> new RuntimeException("Project not found"));
 
+        if(user.getId()!=project.getUser().getId()) {
+            throw new RuntimeException("You are not allowed to update this project");
+        }
+
+        updateProjectData(project,updatedProject);
+
+        Project savedProject=projectRepository.save(project);
+
+        updatedCVSAfterEdition(savedProject);
+        return savedProject;
+    }
+
+    private void updateProjectData(Project project, Project updatedProject) {
         if (updatedProject.getCompanyName() != null)
             project.setCompanyName(updatedProject.getCompanyName());
         if (updatedProject.getSlogan() != null)
@@ -116,11 +129,8 @@ public class ProjectService {
             project.setLegalName(updatedProject.getLegalName());
         if (updatedProject.getType() != null)
             project.setType(updatedProject.getType());
-
-        Project savedProject=projectRepository.save(project);
-        updatedCVSAfterEdition(savedProject);
-        return savedProject;
     }
+
     public void updatedCVSAfterEdition(Project project) {
         String tempFilePath = "temp_projects.csv";
         blobService.downloadToFile(BLOB_NAME, tempFilePath);

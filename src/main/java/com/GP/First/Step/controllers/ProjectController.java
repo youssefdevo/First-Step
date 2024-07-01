@@ -77,7 +77,10 @@ public class ProjectController {
     @ResponseBody
     @PutMapping("/update/{id}")
     public ResponseEntity<SuccessRes> updateProject(@PathVariable long id, @RequestBody Project updatedProject) {
-        Project project = projectService.updateProject(id, updatedProject);
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userService.getUserByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+
+        Project project = projectService.updateProject(user, id, updatedProject);
         return ResponseEntity.ok().body(new SuccessRes(HttpStatus.OK, "Your project updated successfully", project));
     }
 

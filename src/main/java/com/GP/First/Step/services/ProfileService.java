@@ -32,14 +32,19 @@ public class ProfileService {
     public User updateProfile(String email, User updatedUser) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
 
+        updateProfileData(user, updatedUser);
+
+        return userRepository.save(user);
+    }
+
+    private void updateProfileData(User user, User updatedUser) {
+
         if (updatedUser.getFirstName() != null)
             user.setFirstName(updatedUser.getFirstName());
         if (updatedUser.getLastName() != null)
             user.setLastName(updatedUser.getLastName());
         if (updatedUser.getUserName() != null)
             user.setUserName(updatedUser.getUserName());
-
-        return userRepository.save(user);
     }
 
     public void resetPassword(String email, ResetPasswordReq resetPasswordReq) {
