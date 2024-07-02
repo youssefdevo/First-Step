@@ -1,6 +1,7 @@
 package com.GP.First.Step.controllers;
 
 
+import com.GP.First.Step.DTO.response.ErrorRes;
 import com.GP.First.Step.DTO.response.SuccessRes;
 import com.GP.First.Step.entities.Comment;
 import com.GP.First.Step.entities.Project;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
-@Controller
+@RestController
 @RequestMapping("/rest/project")
 public class ProjectController {
     private final ProjectService projectService;
@@ -85,11 +86,12 @@ public class ProjectController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<SuccessRes> deleteProject(@PathVariable Long id) {
+    public ResponseEntity<?> deleteProject(@PathVariable Long id) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.getUserByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        if (projectService.deleteProject(user, id))
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorRes(HttpStatus.FORBIDDEN, "You are not allowed to Delete this project"));
 
-        projectService.deleteProject(user, id);
         return ResponseEntity.ok(new SuccessRes(HttpStatus.OK, "Project deleted successfully", null));
     }
 
@@ -111,14 +113,22 @@ public class ProjectController {
     @ResponseBody
     @PutMapping("/editComment/{id}")
     public ResponseEntity<SuccessRes> editComment(@PathVariable long id, @RequestBody Comment updatedComment) {
-        Comment comment = projectService.updateComment(id, updatedComment);
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userService.getUserByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+
+        Comment comment = projectService.updateComment(user, id, updatedComment);
         return ResponseEntity.ok().body(new SuccessRes(HttpStatus.OK, "Comment updated successfully", comment));
     }
 
 
     @DeleteMapping("/deleteComment/{id}")
-    public ResponseEntity<SuccessRes> deleteComment(@PathVariable Long id) {
-        projectService.deleteComment(id);
+    public ResponseEntity<?> deleteComment(@PathVariable Long id) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userService.getUserByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        if (projectService.deleteComment(user, id))
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorRes(HttpStatus.FORBIDDEN, "You are not allowed to Delete this Comment"));
+
+
         return ResponseEntity.ok(new SuccessRes(HttpStatus.OK, "Comment deleted successfully", null));
     }
 

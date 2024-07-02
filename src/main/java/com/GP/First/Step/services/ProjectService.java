@@ -53,7 +53,7 @@ public class ProjectService {
         String tempFilePath = "temp_projects.csv";
         blobService.downloadToFile(BLOB_NAME, tempFilePath);
         List<Project> projects = csvService.readProjectsFromCSV(tempFilePath);
-       projectRepository.saveAll(projects);
+        projectRepository.saveAll(projects);
         try {
             Files.deleteIfExists(Paths.get(tempFilePath));
         } catch (IOException e) {
@@ -84,13 +84,13 @@ public class ProjectService {
 
         Project project = projectRepository.findById(id).orElseThrow(() -> new RuntimeException("Project not found"));
 
-        if(user.getId()!=project.getUser().getId()) {
+        if (user.getId() != project.getUser().getId()) {
             throw new RuntimeException("You are not allowed to update this project");
         }
 
-        updateProjectData(project,updatedProject);
+        updateProjectData(project, updatedProject);
 
-        Project savedProject=projectRepository.save(project);
+        Project savedProject = projectRepository.save(project);
 
         updatedCVSAfterEdition(savedProject);
         return savedProject;
@@ -143,15 +143,16 @@ public class ProjectService {
         }
     }
 
-    public void deleteProject(User user, long id) {
+    public Boolean deleteProject(User user, long id) {
         Project project = projectRepository.findById(id).orElseThrow(() -> new RuntimeException("Project not found"));
 
-        if(user.getId()!=project.getUser().getId()) {
-            throw new RuntimeException("You are not allowed to Delete this project");
-        }
+        if (user.getId() != project.getUser().getId())
+            return false;
+
 
         projectRepository.delete(project);
         updateCSVAfterDeletion(project);
+        return true;
     }
 
     private void updateCSVAfterDeletion(Project project) {
@@ -178,8 +179,11 @@ public class ProjectService {
         return commentRepository.findByProject_Id(id);
     }
 
-    public Comment updateComment(long id, Comment updatedComment) {
+    public Comment updateComment(User user, long id, Comment updatedComment) {
         Comment comment = commentRepository.findById(id).orElseThrow(() -> new RuntimeException("Comment not found"));
+
+        if(user.getId() != comment.getUser().getId())
+            throw new RuntimeException("You are not allowed to update this Comment");
 
         if (updatedComment.getContent() != null)
             comment.setContent(updatedComment.getContent());
@@ -187,9 +191,15 @@ public class ProjectService {
         return commentRepository.save(comment);
     }
 
-    public void deleteComment(long id) {
+    public Boolean deleteComment(User user, long id) {
         Comment comment = commentRepository.findById(id).orElseThrow(() -> new RuntimeException("Comment not found"));
+
+        if(user.getId() != comment.getUser().getId())
+            return false;
+
         commentRepository.delete(comment);
+
+        return true;
     }
 
     public Project likeProject(long projectID, User user) {
