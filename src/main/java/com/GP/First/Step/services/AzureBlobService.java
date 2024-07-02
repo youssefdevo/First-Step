@@ -1,18 +1,16 @@
 package com.GP.First.Step.services;
 
-import com.GP.First.Step.entities.Project;
+
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobClientBuilder;
 import com.azure.storage.blob.models.BlobStorageException;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
+
 
 
 public class AzureBlobService implements BlobService {

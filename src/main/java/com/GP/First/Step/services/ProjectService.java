@@ -2,7 +2,6 @@ package com.GP.First.Step.services;
 
 import com.GP.First.Step.DAO.CommentRepository;
 import com.GP.First.Step.DAO.ProjectRepository;
-import com.GP.First.Step.DAO.UserRepository;
 import com.GP.First.Step.entities.Comment;
 import com.GP.First.Step.entities.Project;
 import com.GP.First.Step.entities.User;
