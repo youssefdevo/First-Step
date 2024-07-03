@@ -17,7 +17,10 @@ public class SearchController {
     private SearchService searchService;
 
     @GetMapping("/rest/search")
+
+    // Performs a search on projects based on the query parameter.
     public List<?> search(@RequestParam String query) {
+        // Call the searchProjects method of searchService with the query and return the results.
         return searchService.searchProjects(query);
     }
 }
