@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 // Mark this class as a Service to handle business logic
 @Service
 public class ProfileService {
@@ -28,9 +30,9 @@ public class ProfileService {
     }
 
     // Get user profile by username
-    public User getUserProfileByUsername(String username) {
+    public Optional<User> getUserProfileByUsername(String username) {
         // It will get the profile of the user if not exist will return exception
-        return userRepository.findByUserName(username).orElseThrow(() -> new RuntimeException("User not found"));
+        return userRepository.findByUserName(username);
     }
 
     public User updateProfile(String email, User updatedUser) {

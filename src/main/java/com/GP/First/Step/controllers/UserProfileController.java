@@ -12,6 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Optional;
 
 // Mark this class as a RestController to handle HTTP requests
 @RestController
@@ -42,9 +45,13 @@ public class UserProfileController {
 
     // Handle GET requests to retrieve a user's profile by email
     @GetMapping("{email}")
-    public ResponseEntity<SuccessRes> getUserProfile(@PathVariable String email) {
+    public ResponseEntity<?> getUserProfile(@PathVariable String email) {
         // Use the profileService to get the user's profile based on the provided email.
-        User user = profileService.getUserProfileByUsername(email);
+        Optional<User> user = profileService.getUserProfileByUsername(email);
+        if(user.isEmpty()) {
+            ErrorRes errorRes = new ErrorRes(HttpStatus.NOT_FOUND, "User not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorRes);
+        }
 
         // Return an HTTP 200 response with a success message and the user's profile.
         return ResponseEntity.ok().body(new SuccessRes(HttpStatus.OK, "User profile got successfully", user));
