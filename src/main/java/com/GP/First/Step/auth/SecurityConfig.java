@@ -20,11 +20,13 @@ public class SecurityConfig  {
     private final CustomUserDetailsService userDetailsService;
     private final JwtAuthorizationFilter jwtAuthorizationFilter;
 
+    // Constructor to inject dependencies
     public SecurityConfig(CustomUserDetailsService customUserDetailsService, JwtAuthorizationFilter jwtAuthorizationFilter) {
         this.userDetailsService = customUserDetailsService;
         this.jwtAuthorizationFilter = jwtAuthorizationFilter;
     }
 
+    // Bean to expose AuthenticationManager
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http, PasswordEncoder passwordEncoder)
             throws Exception {
@@ -33,21 +35,23 @@ public class SecurityConfig  {
         return authenticationManagerBuilder.build();
     }
 
-
+    // Bean to configure SecurityFilterChain
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        http.csrf().disable()
+        http
+                .csrf().disable()    // Disabling CSRF protection
                 .authorizeRequests()
-                .requestMatchers("/rest/auth/**").permitAll()
-                .anyRequest().authenticated()
-                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
+                .requestMatchers("/rest/auth/**").permitAll() // Allowing all requests to "/rest/auth/**" without authentication.
+                .anyRequest().authenticated()   // Requiring authentication for all other requests
+                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Using stateless session management
+                .and().addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class); // Adding JWT filter
 
         return http.build();
     }
 
 
+    // Bean to expose PasswordEncoder
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
