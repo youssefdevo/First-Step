@@ -87,11 +87,14 @@ public class AuthController {
         // Create and save the new user
         User savedUser = authenticationService.createUser(newUser);
 
+        // Authenticate the user
+        User authenticatedUser = authenticationService.authenticate(newUser.getEmail(), newUser.getPassword());
+
         // Create JWT token
-        String token = jwtUtil.createToken(Optional.of(savedUser));
+        String token = jwtUtil.createToken(Optional.of(authenticatedUser));
 
         // Create response
-        LoginRes loginRes = new LoginRes(savedUser.getEmail(), token);
+        LoginRes loginRes = new LoginRes(authenticatedUser.getEmail(), token);
 
         return ResponseEntity.status(HttpStatus.OK).body(new SuccessRes(HttpStatus.OK, "Signup successful", loginRes));
 

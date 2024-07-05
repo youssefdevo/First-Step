@@ -8,7 +8,6 @@ import com.GP.First.Step.entities.Project;
 import com.GP.First.Step.entities.User;
 import com.GP.First.Step.services.ProjectService;
 import com.GP.First.Step.services.UserService;
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -116,7 +115,7 @@ public class ProjectController {
         User user = userService.getUserByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
 
         // Checks if the user is allowed to delete the project.
-        if (projectService.deleteProject(user, id))
+        if (!projectService.deleteProject(user, id))
             // If not allowed, returns a forbidden response.
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorRes(HttpStatus.FORBIDDEN, "You are not allowed to Delete this project"));
 
@@ -175,8 +174,7 @@ public class ProjectController {
 
         // Checks if the user is not allowed to delete the comment.
         // Calls the deleteComment method from ProjectService with the comment ID and user.
-        if (projectService.deleteComment(user, id))
-
+        if (!projectService.deleteComment(user, id))
             // If not allowed, returns a forbidden response.
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorRes(HttpStatus.FORBIDDEN, "You are not allowed to Delete this Comment"));
 
